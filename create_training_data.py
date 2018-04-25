@@ -1,6 +1,6 @@
-import os
+import itertools as it
 import os.path as osp
-from typing import List, Tuple, Iterable
+from typing import Tuple, Iterable
 
 import matplotlib.pylab as pl
 import numpy as np
@@ -8,8 +8,8 @@ import numpy as np
 imgDir = "res/img100"
 
 
-def images() -> List[str]:
-    return os.listdir(imgDir)
+def flatmap(f, list_of_list):
+    return it.chain.from_iterable(map(f, list_of_list))
 
 
 def create_training_img_arrays(img_name: str) -> Iterable[Tuple[np.array, np.array]]:
@@ -48,7 +48,12 @@ def create_training_data(name: str, delta: int) -> Iterable[np.array]:
         yield np.hstack((greens, transp))
 
 
-# TODO Solve the flat map problem
+names = ['1', '2']
+datas = flatmap(lambda name: create_training_data(name, 10), names)
+
+for idx, line in enumerate(datas):
+    print("{} {}".format(idx, line))
+
 
 '''
 for idx, line in enumerate(create_training_data('1', 10)):

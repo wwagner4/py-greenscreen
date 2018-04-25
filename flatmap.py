@@ -1,8 +1,8 @@
-from itertools import chain
+import itertools as it
 
 
 def flatmap(f, list_of_list):
-    return chain.from_iterable(map(f, list_of_list))
+    return it.chain.from_iterable(map(f, list_of_list))
 
 
 e2 = [

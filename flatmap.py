@@ -1,17 +1,33 @@
 from itertools import chain
 
-episodes = [
-    {"id": 1, "topics": [1, 2, 3]},
-    {"id": 2, "topics": [4, 5, 6]}
+
+def flatmap(f, list_of_list):
+    return chain.from_iterable(map(f, list_of_list))
+
+
+e2 = [
+    [1, 2, 3],
+    [4, 5]
+]
+
+e3 = [
+    range(0, 3),
+    range(6, 9)
 ]
 
 
-def flatmap(f, items):
-    return chain.from_iterable(map(f, items))
+def generator():
+    for i in range(0, 3):
+        yield range(i, 5)
 
 
-flattened_episodes = flatmap(
-    lambda _episode: [{"id": _episode["id"], "topic": topic} for topic in _episode["topics"]], episodes)
+for x in generator():
+    print("gen {}".format(x))
 
-for ep in flattened_episodes:
-    print(ep)
+flattened = flatmap(
+    lambda _list: [elem + 100 for elem in _list], generator())
+
+print("flattened {}".format(flattened))
+
+for ep in flattened:
+    print("flattened elem '{}'".format(ep))

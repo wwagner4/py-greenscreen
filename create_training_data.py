@@ -49,14 +49,6 @@ def create_training_data(name: str, delta: int) -> Iterable[np.array]:
 
 
 # TODO Solve the flat map problem
-# [filename for path in dirs for filename in os.listdir(path)]
-
-a = [[1, 2, 3, 4], [1, 2, 3, 4], [1, 2, 3, 4]]
-b = [[6, 5, 4, 3, 2], [6, 5, 4, 3, 2]]
-
-x = [a1 for a1 in a for b1 in b]
-
-print(x)
 
 '''
 for idx, line in enumerate(create_training_data('1', 10)):

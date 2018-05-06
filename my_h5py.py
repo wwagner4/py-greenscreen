@@ -8,7 +8,7 @@ def write():
 
         a1 = np.arange(0, 17, 4)
 
-        d1 = dummy001.create_dataset(name="d6", data=a1)
+        d1 = dummy001.create_dataset(name="d7", data=a1)
         print("d1 %s" % d1)
 
         print("dummy001 len %s" % len(dummy001))
@@ -26,11 +26,8 @@ def read():
         print("file --> %s" % dummy001)
 
         print("dummy001 len %s" % len(dummy001))
-        for k in dummy001.keys():
-            print(k)
-
-        for v in dummy001.values():
-            print(v)
+        for (k, v) in dummy001.items():
+            print("k/v %s/%s" % (k, v))
 
         d = dummy001['d2']
         print("d[0] %s" % d[1])
@@ -38,4 +35,5 @@ def read():
             print("v = %10d" % v)
 
 
+# write()
 read()

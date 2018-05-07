@@ -11,11 +11,9 @@ def flatmap(f, list_of_list: Iterable[Any]) -> Iterable[Any]:
     return it.chain.from_iterable(map(f, list_of_list))
 
 
-def create_training_img_arrays(img_dir: str, img_name: str) -> Tuple[np.array, np.array]:
-    fnamg = "bsp{}_0.png".format(img_name)
-    fnamt = "bsp{}_1.png".format(img_name)
-    img: np.array = pl.imread(osp.join(img_dir, fnamg))
-    imt: np.array = pl.imread(osp.join(img_dir, fnamt))[:, :, -1:]  # use only the transparent value
+def create_training_img_arrays(green_transp_name: Tuple[str, str]) -> Tuple[np.array, np.array]:
+    img: np.array = pl.imread(green_transp_name[0])
+    imt: np.array = pl.imread(green_transp_name[1])[:, :, -1:]  # use only the transparent value
     return img, imt
 
 
@@ -41,8 +39,9 @@ def square_indices_rows_cols(delta: int) -> Iterable[Tuple[int, int]]:
     return flatmap(lambda l: l, [square_indices_rows(delta), square_indices_cols(delta)])
 
 
-def create_training_data(img_dir: str, name: str, delta: int, around_idxs: List[Tuple[int, int]]) -> Iterable[np.array]:
-    green_img, transp_img = create_training_img_arrays(img_dir, name)
+def create_training_data(green_transp_name: Tuple[str, str], delta: int, around_idxs: List[Tuple[int, int]]) -> \
+        Iterable[np.array]:
+    green_img, transp_img = create_training_img_arrays(green_transp_name)
     rows = green_img.shape[0]
     cols = green_img.shape[1]
     core_idxs: Iterable[Tuple[int, int]] = core_indices(rows, cols, delta)
@@ -63,26 +62,32 @@ def create_training_data1(
         yield np.hstack((greens, transp))
 
 
-def write_file(file_name: str, data: Iterable[np.array]):
-    with open(file_name, 'w') as f:
+def write_file(out_file_name: str, data: Iterable[np.array]):
+    def array_to_string(arr: np.array) -> str:
+        _line = ''.join(['%5.3f;' % num for num in arr])
+        return _line[:-1]
+
+    with open(out_file_name, 'w') as f:
         for i, line in enumerate(data):
             if i % 1000 == 0 and i > 0:
                 print("wrote {} lines".format(i))
             f.write(array_to_string(line) + "\n")
 
 
-def array_to_string(arr: np.array) -> str:
-    line = ''.join(['%5.3f;' % num for num in arr])
-    return line[:-1]
-
-
 def run():
-    names = ['1', '2']
-    delta = 10
-    around_idxs = list(square_indices_rows_cols(delta))
-    img_dir = "res/img100"
     out_file = "/Users/wwagner4/work/work-greenscreen/data01.csv"
-    datas = flatmap(lambda name: create_training_data(img_dir, name, delta, around_idxs), names)
+
+    img_dir = "res/img100"
+    imgg1 = osp.join(img_dir, 'bsp1_green.png')
+    imgt1 = osp.join(img_dir, 'bsp1_transp.png')
+    imgg2 = osp.join(img_dir, 'bsp2_green.png')
+    imgt2 = osp.join(img_dir, 'bsp2_transp.png')
+    names = [(imgg1, imgt1), (imgg2, imgt2)]
+
+    delta = 10
+
+    around_idxs = list(square_indices_rows_cols(10))
+    datas = flatmap(lambda green_transp_name: create_training_data(green_transp_name, delta, around_idxs), names)
     write_file(out_file, datas)
     print("wrote data to'{}'".format(out_file))
 

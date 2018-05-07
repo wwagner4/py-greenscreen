@@ -1,5 +1,6 @@
 import itertools as it
 import os.path as osp
+from pathlib import Path
 from typing import Tuple, Iterable, List, Any
 
 import matplotlib.pylab as pl
@@ -89,7 +90,9 @@ def write_file(out_file_name: str, data: Iterable[np.array]):
 
 
 def run():
-    out_file = "/Users/wwagner4/work/work-greenscreen/data01.csv"
+    home_dir = Path.home()
+    work_dir = osp.join(home_dir, 'work/work-greenscreen')
+    out_file = osp.join(work_dir, 'data_img100.csv')
 
     img_dir = "res/img100"
     names = [
@@ -102,7 +105,7 @@ def run():
 
     delta = 10
 
-    around_idxs = list(square_indices_rows_cols(10))
+    around_idxs = list(square_indices_rows_cols(delta))
     datas = flatmap(lambda train_file_names: create_training_data(train_file_names, delta, around_idxs), names)
     write_file(out_file, datas)
     print("wrote data to'{}'".format(out_file))

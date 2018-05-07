@@ -6,15 +6,29 @@ import matplotlib.pylab as pl
 import numpy as np
 
 
+class TrainFileNames:
+
+    def __init__(self, green: str, transp: str):
+        self.green = green
+        self.transp = transp
+
+
+class TrainImages:
+
+    def __init__(self, green: np.array, transp: np.array):
+        self.green = green
+        self.transp = transp
+
+
 # f: A function returning an Iterable
 def flatmap(f, list_of_list: Iterable[Any]) -> Iterable[Any]:
     return it.chain.from_iterable(map(f, list_of_list))
 
 
-def create_training_img_arrays(green_transp_name: Tuple[str, str]) -> Tuple[np.array, np.array]:
-    img: np.array = pl.imread(green_transp_name[0])
-    imt: np.array = pl.imread(green_transp_name[1])[:, :, -1:]  # use only the transparent value
-    return img, imt
+def create_training_img_arrays(green_transp_name: TrainFileNames) -> TrainImages:
+    img: np.array = pl.imread(green_transp_name.green)
+    imt: np.array = pl.imread(green_transp_name.transp)[:, :, -1:]  # use only the transparent value
+    return TrainImages(img, imt)
 
 
 def core_indices(rows: int, cols: int, delta: int) -> Iterable[Tuple[int, int]]:
@@ -39,26 +53,26 @@ def square_indices_rows_cols(delta: int) -> Iterable[Tuple[int, int]]:
     return flatmap(lambda l: l, [square_indices_rows(delta), square_indices_cols(delta)])
 
 
-def create_training_data(green_transp_name: Tuple[str, str], delta: int, around_idxs: List[Tuple[int, int]]) -> \
+def create_training_data(green_transp_name: TrainFileNames, delta: int, around_idxs: List[Tuple[int, int]]) -> \
         Iterable[np.array]:
-    green_img, transp_img = create_training_img_arrays(green_transp_name)
-    rows = green_img.shape[0]
-    cols = green_img.shape[1]
+    train_images = create_training_img_arrays(green_transp_name)
+    rows = train_images.green.shape[0]
+    cols = train_images.green.shape[1]
     core_idxs: Iterable[Tuple[int, int]] = core_indices(rows, cols, delta)
-    return create_training_data1(green_img, transp_img, core_idxs, around_idxs)
+    return create_training_data1(train_images, core_idxs, around_idxs)
 
 
 def create_training_data1(
-        g: np.array, t: np.array,
+        train_images: TrainImages,
         core_idxs: Iterable[Tuple[int, int]], around_idxs: List[Tuple[int, int]]) -> Iterable[np.array]:
     for r, c in core_idxs:
         greens = np.empty(0, dtype=float)
         for i, j in around_idxs:
             r1 = r + i
             c1 = c + j
-            green = g[r1, c1]
+            green = train_images.green[r1, c1]
             greens = np.hstack((greens, green))
-        transp = t[r, c, 0]
+        transp = train_images.transp[r, c, 0]
         yield np.hstack((greens, transp))
 
 
@@ -78,16 +92,18 @@ def run():
     out_file = "/Users/wwagner4/work/work-greenscreen/data01.csv"
 
     img_dir = "res/img100"
-    imgg1 = osp.join(img_dir, 'bsp1_green.png')
-    imgt1 = osp.join(img_dir, 'bsp1_transp.png')
-    imgg2 = osp.join(img_dir, 'bsp2_green.png')
-    imgt2 = osp.join(img_dir, 'bsp2_transp.png')
-    names = [(imgg1, imgt1), (imgg2, imgt2)]
+    names = [
+        TrainFileNames(
+            osp.join(img_dir, 'bsp1_green.png'),
+            osp.join(img_dir, 'bsp1_transp.png')),
+        TrainFileNames(
+            osp.join(img_dir, 'bsp2_green.png'),
+            osp.join(img_dir, 'bsp2_transp.png'))]
 
     delta = 10
 
     around_idxs = list(square_indices_rows_cols(10))
-    datas = flatmap(lambda green_transp_name: create_training_data(green_transp_name, delta, around_idxs), names)
+    datas = flatmap(lambda train_file_names: create_training_data(train_file_names, delta, around_idxs), names)
     write_file(out_file, datas)
     print("wrote data to'{}'".format(out_file))
 

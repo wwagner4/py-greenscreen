@@ -1,6 +1,6 @@
 import itertools as it
-import os.path as osp
 import os
+import os.path as osp
 from pathlib import Path
 from typing import Tuple, Iterable, List, Any
 
@@ -95,7 +95,7 @@ def run():
     work_dir = osp.join(home_dir, 'work', 'work-greenscreen')
     print("work_dir: '{}'".format(work_dir))
     if not osp.exists(work_dir):
-	    os.makedirs(work_dir)
+        os.makedirs(work_dir)
 
     out_file = osp.join(work_dir, 'data_img100.csv')
 

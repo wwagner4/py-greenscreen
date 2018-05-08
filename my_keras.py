@@ -1,10 +1,11 @@
 import os
 import os.path as osp
-import numpy as np
 from pathlib import Path
 from typing import Tuple
-from keras.models import Sequential
+
+import numpy as np
 from keras.layers import Dense
+from keras.models import Sequential
 from keras.optimizers import Adam
 
 
@@ -37,3 +38,7 @@ print("Compiled model {}".format(model))
 
 model.fit(x, y, epochs=10, batch_size=20)
 print("Fit model {}".format(model))
+
+model_file = osp.join(work_dir, "model-img100.h5")
+model.save(model_file)
+print("Saved model to {}".format(model_file))

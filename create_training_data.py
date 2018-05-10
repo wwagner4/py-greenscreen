@@ -8,12 +8,6 @@ import common as co
 
 
 def create(out_file: str):
-    class Dim:
-
-        def __init__(self, rows: int, cols: int):
-            self.rows = rows
-            self.cols = cols
-
     class TrainFileNames:
 
         def __init__(self, green: str, transp: str):
@@ -22,7 +16,7 @@ def create(out_file: str):
 
     class TrainImages:
 
-        def __init__(self, file_names: TrainFileNames, dim: Dim):
+        def __init__(self, file_names: TrainFileNames, dim: co.Dim):
             def validate(img: np.array, name: str):
                 rows = img.shape[0]
                 cols = img.shape[1]
@@ -38,7 +32,8 @@ def create(out_file: str):
             self.green = green
             self.transp = transp
 
-    def create_rows(names: TrainFileNames, bord: int, idx_rel: List[Tuple[int, int]], dim: Dim) -> Iterable[np.array]:
+    def create_rows(names: TrainFileNames, bord: int, idx_rel: List[Tuple[int, int]], dim: co.Dim) -> Iterable[
+        np.array]:
         train_images = TrainImages(names, dim)
         idx_core: Iterable[Tuple[int, int]] = co.core_indices(dim.rows, dim.cols, bord)
         for row, col in idx_core:
@@ -65,7 +60,7 @@ def create(out_file: str):
     def create_img100():
 
         img_dir = "res/img100"
-        dim = Dim(100, 133)
+        dim = co.Dim(100, 133)
         names = [
             TrainFileNames(
                 green=osp.join(img_dir, 'bsp1_green.png'),

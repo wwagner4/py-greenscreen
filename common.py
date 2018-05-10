@@ -2,6 +2,16 @@ import itertools as it
 from typing import Tuple, Iterable, Any
 
 
+class Dim:
+
+    def __init__(self, rows: int, cols: int):
+        self.rows = rows
+        self.cols = cols
+
+    def __str__(self):
+        return "<Dim rows:{} cols:{}>".format(self.rows, self.cols)
+
+
 # f: A function returning an Iterable
 def flatmap(f, list_of_list: Iterable[Any]) -> Iterable[Any]:
     return it.chain.from_iterable(map(f, list_of_list))

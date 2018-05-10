@@ -1,5 +1,11 @@
 import itertools as it
+import os
+import os.path as osp
+from pathlib import Path
 from typing import Tuple, Iterable, Any
+
+import matplotlib.pylab as pl
+import numpy as np
 
 
 class Dim:
@@ -37,3 +43,26 @@ def square_indices_cols(delta: int) -> Iterable[Tuple[int, int]]:
 
 def square_indices_rows_cols(delta: int) -> Iterable[Tuple[int, int]]:
     return flatmap(lambda l: l, [square_indices_rows(delta), square_indices_cols(delta)])
+
+
+def work_file(name: str) -> str:
+    home_dir = Path.home()
+    work_dir = osp.join(home_dir, 'work', 'work-greenscreen')
+    if not osp.exists(work_dir):
+        print("created work dir: '{}'".format(work_dir))
+        os.makedirs(work_dir)
+    return osp.join(work_dir, name)
+
+
+def load_image(path: str, dim: Dim) -> np.array:
+    def validate(img: np.array):
+        rows = img.shape[0]
+        cols = img.shape[1]
+        if rows != dim.rows or cols != dim.cols:
+            msg = "Illegal dimension of image {}: {}/{}. expected: {}/{}" \
+                .format(path, rows, cols, dim.rows, dim.cols)
+            raise AssertionError(msg)
+
+    re = pl.imread(path)
+    validate(re)
+    return re

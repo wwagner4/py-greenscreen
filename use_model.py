@@ -9,4 +9,8 @@ def use(model_file: str):
     print("loaded model: '{}'".format(model))
 
     dim = co.Dim(100, 133)
-    print("dim {}".format(dim))
+    print("dim: {}".format(dim))
+
+    delta = 10
+    icore = co.core_indices(dim.rows, dim.cols, delta=delta)
+    idiff = list(co.square_indices_rows_cols(delta=delta))

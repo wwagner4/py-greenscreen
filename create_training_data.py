@@ -1,7 +1,6 @@
 import os.path as osp
 from typing import Tuple, Iterable, List
 
-import matplotlib.pylab as pl
 import numpy as np
 
 import common as co
@@ -17,23 +16,11 @@ def create(out_file: str):
     class TrainImages:
 
         def __init__(self, file_names: TrainFileNames, dim: co.Dim):
-            def validate(img: np.array, name: str):
-                rows = img.shape[0]
-                cols = img.shape[1]
-                if rows != dim.rows or cols != dim.cols:
-                    msg = "Illegal dimension of image {}: {}/{}. expected: {}/{}" \
-                        .format(name, rows, cols, dim.rows, dim.cols)
-                    raise AssertionError(msg)
+            self.green = co.load_image(file_names.green, dim)
+            self.transp = co.load_image(file_names.transp, dim)[:, :, -1:]  # use only the transparent value
 
-            green: np.array = pl.imread(file_names.green)
-            validate(green, file_names.green)
-            transp: np.array = pl.imread(file_names.transp)[:, :, -1:]  # use only the transparent value
-            validate(transp, file_names.transp)
-            self.green = green
-            self.transp = transp
-
-    def create_rows(names: TrainFileNames, bord: int, idx_rel: List[Tuple[int, int]], dim: co.Dim) -> Iterable[
-        np.array]:
+    def create_rows(
+            names: TrainFileNames, bord: int, idx_rel: List[Tuple[int, int]], dim: co.Dim) -> Iterable[np.array]:
         train_images = TrainImages(names, dim)
         idx_core: Iterable[Tuple[int, int]] = co.core_indices(dim.rows, dim.cols, bord)
         for row, col in idx_core:

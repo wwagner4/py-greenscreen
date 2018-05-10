@@ -1,5 +1,21 @@
 import itertools as it
-from typing import Tuple, Iterable, Any
+import os
+import os.path as osp
+from pathlib import Path
+from typing import Tuple, Iterable, Any, List
+
+import matplotlib.pylab as pl
+import numpy as np
+
+
+class Dim:
+
+    def __init__(self, rows: int, cols: int):
+        self.rows = rows
+        self.cols = cols
+
+    def __str__(self):
+        return "<Dim rows:{} cols:{}>".format(self.rows, self.cols)
 
 
 # f: A function returning an Iterable
@@ -27,3 +43,36 @@ def square_indices_cols(delta: int) -> Iterable[Tuple[int, int]]:
 
 def square_indices_rows_cols(delta: int) -> Iterable[Tuple[int, int]]:
     return flatmap(lambda l: l, [square_indices_rows(delta), square_indices_cols(delta)])
+
+
+def work_file(name: str) -> str:
+    home_dir = Path.home()
+    work_dir = osp.join(home_dir, 'work', 'work-greenscreen')
+    if not osp.exists(work_dir):
+        print("created work dir: '{}'".format(work_dir))
+        os.makedirs(work_dir)
+    return osp.join(work_dir, name)
+
+
+def load_image(path: str, dim: Dim) -> np.array:
+    def validate(img: np.array):
+        rows = img.shape[0]
+        cols = img.shape[1]
+        if rows != dim.rows or cols != dim.cols:
+            msg = "Illegal dimension of image {}: {}/{}. expected: {}/{}" \
+                .format(path, rows, cols, dim.rows, dim.cols)
+            raise AssertionError(msg)
+
+    re = pl.imread(path)
+    validate(re)
+    return re
+
+
+def create_features(img: np.array, row: int, col: int, idx_rel: List[Tuple[int, int]]) -> np.array:
+    re = np.empty(0, dtype=float)
+    for row_off, col_off in idx_rel:
+        row1 = row + row_off
+        col1 = col + col_off
+        green = img[row1, col1]
+        re = np.hstack((re, green))
+    return re

@@ -1,19 +1,12 @@
 import os.path as osp
 from typing import Tuple, Iterable, List
 
-import matplotlib.pylab as pl
 import numpy as np
 
 import common as co
 
 
 def create(out_file: str):
-    class Dim:
-
-        def __init__(self, rows: int, cols: int):
-            self.rows = rows
-            self.cols = cols
-
     class TrainFileNames:
 
         def __init__(self, green: str, transp: str):
@@ -22,38 +15,22 @@ def create(out_file: str):
 
     class TrainImages:
 
-        def __init__(self, file_names: TrainFileNames, dim: Dim):
-            def validate(img: np.array, name: str):
-                rows = img.shape[0]
-                cols = img.shape[1]
-                if rows != dim.rows or cols != dim.cols:
-                    msg = "Illegal dimension of image {}: {}/{}. expected: {}/{}" \
-                        .format(name, rows, cols, dim.rows, dim.cols)
-                    raise AssertionError(msg)
+        def __init__(self, file_names: TrainFileNames, dim: co.Dim):
+            self.green = co.load_image(file_names.green, dim)
+            self.transp = co.load_image(file_names.transp, dim)[:, :, -1:]  # use only the transparent value
 
-            green: np.array = pl.imread(file_names.green)
-            validate(green, file_names.green)
-            transp: np.array = pl.imread(file_names.transp)[:, :, -1:]  # use only the transparent value
-            validate(transp, file_names.transp)
-            self.green = green
-            self.transp = transp
-
-    def create_rows(names: TrainFileNames, bord: int, idx_rel: List[Tuple[int, int]], dim: Dim) -> Iterable[np.array]:
+    def create_rows(
+            names: TrainFileNames, bord: int, idx_rel: List[Tuple[int, int]], dim: co.Dim) -> Iterable[np.array]:
         train_images = TrainImages(names, dim)
         idx_core: Iterable[Tuple[int, int]] = co.core_indices(dim.rows, dim.cols, bord)
         for row, col in idx_core:
-            greens = np.empty(0, dtype=float)
-            for row_off, col_off in idx_rel:
-                row1 = row + row_off
-                col1 = col + col_off
-                green = train_images.green[row1, col1]
-                greens = np.hstack((greens, green))
-            transp = train_images.transp[row, col, 0]
-            yield np.hstack((greens, transp))
+            features = co.create_features(train_images.green, row, col, idx_rel)
+            labels = train_images.transp[row, col, 0]
+            yield np.hstack((features, labels))
 
     def write_file(file_name: str, data: Iterable[np.array]):
         def array_to_string(arr: np.array) -> str:
-            _line = ''.join(['%5.3f;' % num for num in arr])
+            _line = ''.join(['%7.5f;' % num for num in arr])
             return _line[:-1]
 
         with open(file_name, 'w') as f:
@@ -65,14 +42,14 @@ def create(out_file: str):
     def create_img100():
 
         img_dir = "res/img100"
-        dim = Dim(100, 133)
+        dim = co.Dim(100, 133)
         names = [
             TrainFileNames(
-                osp.join(img_dir, 'bsp1_green.png'),
-                osp.join(img_dir, 'bsp1_transp.png')),
+                green=osp.join(img_dir, 'bsp1_green.png'),
+                transp=osp.join(img_dir, 'bsp1_transp.png')),
             TrainFileNames(
-                osp.join(img_dir, 'bsp2_green.png'),
-                osp.join(img_dir, 'bsp2_transp.png'))]
+                green=osp.join(img_dir, 'bsp2_green.png'),
+                transp=osp.join(img_dir, 'bsp2_transp.png'))]
 
         bord = 10
 

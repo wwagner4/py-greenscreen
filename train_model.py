@@ -27,7 +27,7 @@ def train(csv_file: str, model_file: str):
     model.compile(loss='binary_crossentropy', optimizer=adam, metrics=['accuracy'])
     print("Compiled model {}".format(model))
 
-    model.fit(x, y, epochs=10, batch_size=20)
+    model.fit(x, y, epochs=6, batch_size=20)
     print("Fit model {}".format(model))
 
     model.save(model_file)

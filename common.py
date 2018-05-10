@@ -2,7 +2,7 @@ import itertools as it
 import os
 import os.path as osp
 from pathlib import Path
-from typing import Tuple, Iterable, Any
+from typing import Tuple, Iterable, Any, List
 
 import matplotlib.pylab as pl
 import numpy as np
@@ -65,4 +65,14 @@ def load_image(path: str, dim: Dim) -> np.array:
 
     re = pl.imread(path)
     validate(re)
+    return re
+
+
+def create_features(img: np.array, row: int, col: int, idx_rel: List[Tuple[int, int]]) -> np.array:
+    re = np.empty(0, dtype=float)
+    for row_off, col_off in idx_rel:
+        row1 = row + row_off
+        col1 = col + col_off
+        green = img[row1, col1]
+        re = np.hstack((re, green))
     return re

@@ -24,14 +24,9 @@ def create(out_file: str):
         train_images = TrainImages(names, dim)
         idx_core: Iterable[Tuple[int, int]] = co.core_indices(dim.rows, dim.cols, bord)
         for row, col in idx_core:
-            greens = np.empty(0, dtype=float)
-            for row_off, col_off in idx_rel:
-                row1 = row + row_off
-                col1 = col + col_off
-                green = train_images.green[row1, col1]
-                greens = np.hstack((greens, green))
-            transp = train_images.transp[row, col, 0]
-            yield np.hstack((greens, transp))
+            features = co.create_features(train_images.green, row, col, idx_rel)
+            labels = train_images.transp[row, col, 0]
+            yield np.hstack((features, labels))
 
     def write_file(file_name: str, data: Iterable[np.array]):
         def array_to_string(arr: np.array) -> str:

@@ -53,7 +53,7 @@ def create(out_file: str):
 
     def write_file(file_name: str, data: Iterable[np.array]):
         def array_to_string(arr: np.array) -> str:
-            _line = ''.join(['%5.3f;' % num for num in arr])
+            _line = ''.join(['%7.5f;' % num for num in arr])
             return _line[:-1]
 
         with open(file_name, 'w') as f:
@@ -68,11 +68,11 @@ def create(out_file: str):
         dim = Dim(100, 133)
         names = [
             TrainFileNames(
-                osp.join(img_dir, 'bsp1_green.png'),
-                osp.join(img_dir, 'bsp1_transp.png')),
+                green=osp.join(img_dir, 'bsp1_green.png'),
+                transp=osp.join(img_dir, 'bsp1_transp.png')),
             TrainFileNames(
-                osp.join(img_dir, 'bsp2_green.png'),
-                osp.join(img_dir, 'bsp2_transp.png'))]
+                green=osp.join(img_dir, 'bsp2_green.png'),
+                transp=osp.join(img_dir, 'bsp2_transp.png'))]
 
         bord = 10
 

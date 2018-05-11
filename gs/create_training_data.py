@@ -3,7 +3,7 @@ from typing import Tuple, Iterable, List
 
 import numpy as np
 
-import common as co
+from gs import common as co
 
 
 def create(out_file: str):

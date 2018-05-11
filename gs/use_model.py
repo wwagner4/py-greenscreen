@@ -1,4 +1,4 @@
-import common as co
+from gs import common as co
 import keras.models as km
 import numpy as np
 import os

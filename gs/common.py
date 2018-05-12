@@ -45,9 +45,12 @@ def square_indices_rows_cols(delta: int) -> Iterable[Tuple[int, int]]:
     return flatmap(lambda l: l, [square_indices_rows(delta), square_indices_cols(delta)])
 
 
-def work_file(name: str) -> str:
+def work_file(name: str, _dir: str = None) -> str:
     home_dir = Path.home()
-    work_dir = osp.join(home_dir, 'work', 'work-greenscreen')
+    if _dir is None:
+        work_dir = osp.join(home_dir, 'work', 'work-greenscreen')
+    else:
+        work_dir = osp.join(home_dir, 'work', 'work-greenscreen', _dir)
     if not osp.exists(work_dir):
         print("created work dir: '{}'".format(work_dir))
         os.makedirs(work_dir)

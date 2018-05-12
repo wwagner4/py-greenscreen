@@ -35,7 +35,7 @@ def use(model_file: str):
                 print("made {} predictions for {}. latest value {}".format(cnt, img_file, prediction))
             cnt = cnt + 1
 
-        out = co.work_file(base + ".png")
+        out = co.work_file(name=base + ".png", _dir="img100")
         plot_image(timg, out)
         print("Plot image {}".format(out))
 

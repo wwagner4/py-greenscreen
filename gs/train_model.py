@@ -1,9 +1,18 @@
 from typing import Tuple
 
 import numpy as np
+from keras import Model
 from keras.layers import Dense
 from keras.models import Sequential
 from keras.optimizers import Adam
+
+
+def model_a() -> Model:
+    model = Sequential()
+    model.add(Dense(1000, input_dim=2646, activation='sigmoid'))
+    model.add(Dense(100, activation='sigmoid'))
+    model.add(Dense(1, activation='sigmoid'))
+    return model
 
 
 def train(csv_file: str, model_file: str):
@@ -18,11 +27,9 @@ def train(csv_file: str, model_file: str):
     print("x {}".format(x.shape))
     print("y {}".format(y.shape))
 
-    model = Sequential()
-    model.add(Dense(1000, input_dim=2646, activation='sigmoid'))
-    model.add(Dense(100, activation='sigmoid'))
-    model.add(Dense(1, activation='sigmoid'))
-    print("Defined model {}".format(model))
+    model = model_a()
+    print("Defined model {}".format(model.to_yaml()))
+    print("--------------------------------------------")
     adam = Adam(lr=0.0005)
     model.compile(loss='binary_crossentropy', optimizer=adam, metrics=['accuracy'])
     print("Compiled model {}".format(model))

@@ -1,2 +1,1 @@
-- make a package to put all python files inside. reason: Avoid name clashes with existing packages. e.g 'gs', 'greenscreen', ... ???
 - write to h5 instead of csv file. reason: reading might be faster.

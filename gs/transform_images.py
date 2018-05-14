@@ -3,7 +3,6 @@ import os.path as osp
 
 import wand.image as wim
 
-
 def is_jpg_file(file_name: str):
     return file_name.upper().endswith('JPG')
 
@@ -56,8 +55,8 @@ def deletejpg_dir(di: str):
 
 def transform_images(di: str):
     transform_dir(di)
-    scale_dir(di)
+    # scale_dir(di)
     deletejpg_dir(di)
 
 
-transform_images("/Users/wwagner4/Pictures/Diverses/Wolfis Experimente/Green Screen/100")
+transform_images("/Users/wwagner4/prj/py/greenscreen/res/img500")

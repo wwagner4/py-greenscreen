@@ -6,12 +6,15 @@ import numpy as np
 from gs import common as co
 
 
-def create(out_file: str):
+def create(_id: str):
     class TrainFileNames:
 
         def __init__(self, green: str, transp: str):
             self.green = green
             self.transp = transp
+
+        def __str__(self):
+            return "<TrainFileNames green:{} transp:{}>".format(self.green, self.transp)
 
     class TrainImages:
 
@@ -21,6 +24,7 @@ def create(out_file: str):
 
     def create_rows(
             names: TrainFileNames, bord: int, idx_rel: List[Tuple[int, int]], dim: co.Dim) -> Iterable[np.array]:
+        print("create rows from {}".format(names))
         train_images = TrainImages(names, dim)
         idx_core: Iterable[Tuple[int, int]] = co.core_indices(dim.rows, dim.cols, bord)
         for row, col in idx_core:
@@ -39,22 +43,37 @@ def create(out_file: str):
                     print("wrote {} lines".format(i))
                 f.write(array_to_string(line) + "\n")
 
+    def train_file_names(img_dir: str):
+        return {
+            "img100": [
+                TrainFileNames(
+                    green=osp.join(img_dir, 'bsp1_green.png'),
+                    transp=osp.join(img_dir, 'bsp1_transp.png')),
+                TrainFileNames(
+                    green=osp.join(img_dir, 'bsp2_green.png'),
+                    transp=osp.join(img_dir, 'bsp2_transp.png'))],
+            "img500": [
+                TrainFileNames(
+                    green=osp.join(img_dir, 'trainGreen01.png'),
+                    transp=osp.join(img_dir, 'trainTransp01.png')),
+                TrainFileNames(
+                    green=osp.join(img_dir, 'trainGreen02.png'),
+                    transp=osp.join(img_dir, 'trainTransp02.png')),
+                TrainFileNames(
+                    green=osp.join(img_dir, 'trainGreen03.png'),
+                    transp=osp.join(img_dir, 'trainTransp03.png'))]
+        }
+
     def create_img100():
 
-        img_dir = "res/img100"
-        dim = co.Dim(100, 133)
-        names = [
-            TrainFileNames(
-                green=osp.join(img_dir, 'bsp1_green.png'),
-                transp=osp.join(img_dir, 'bsp1_transp.png')),
-            TrainFileNames(
-                green=osp.join(img_dir, 'bsp2_green.png'),
-                transp=osp.join(img_dir, 'bsp2_transp.png'))]
-
+        img_dir = "res/{}".format(_id)
+        names = train_file_names(img_dir)[_id]
+        dim = co.dim(_id)
         bord = 10
 
         around_idxs = list(co.square_indices_rows_cols(bord))
-        datas = co.flatmap(lambda train_file_names: create_rows(train_file_names, bord, around_idxs, dim), names)
+        datas = co.flatmap(lambda _train_file_names: create_rows(_train_file_names, bord, around_idxs, dim), names)
+        out_file = co.csv_file(_id)
         write_file(out_file, datas)
         print("wrote data to'{}'".format(out_file))
 

@@ -57,13 +57,27 @@ def work_file(name: str, _dir: str = None) -> str:
     return osp.join(work_dir, name)
 
 
-def load_image(path: str, dim: Dim) -> np.array:
+def csv_file(_id: str) -> str:
+    name = "data_{}.csv".format(_id)
+    return work_file(name)
+
+
+def dim(_id: str) -> Dim:
+    if _id == 'img100':
+        return Dim(100, 133)
+    elif _id == 'img500':
+        return Dim(500, 667)
+    else:
+        raise ValueError("invalid id '{}'".format(_id))
+
+
+def load_image(path: str, _dim: Dim) -> np.array:
     def validate(img: np.array):
         rows = img.shape[0]
         cols = img.shape[1]
-        if rows != dim.rows or cols != dim.cols:
+        if rows != _dim.rows or cols != _dim.cols:
             msg = "Illegal dimension of image {}: {}/{}. expected: {}/{}" \
-                .format(path, rows, cols, dim.rows, dim.cols)
+                .format(path, rows, cols, _dim.rows, _dim.cols)
             raise AssertionError(msg)
 
     re = pl.imread(path)

@@ -40,12 +40,13 @@ def use(_id: str):
         print("Plot image {}".format(out))
 
     def run():
+        cfg = co.conf(_id)
         model_file = co.model_file(_id)
         print("using model: '{}'".format(model_file))
         model: km.Sequential = km.load_model(model_file)
         print("loaded model: '{}'".format(model))
 
-        dim = co.Dim(100, 133)
+        dim = cfg.dim
         print("dim: {}".format(dim))
 
         delta = 10

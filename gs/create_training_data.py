@@ -38,7 +38,7 @@ def create(_id: str):
                     f.write(array_to_string(line) + "\n")
             return path
 
-        def write_h5(_id: str, data: Iterable[np.array], conf: co.Conf) -> str:
+        def write_h5(_id: str, _data: Iterable[np.array], conf: co.Conf) -> str:
             path = co.h5_file(_id)
             print("writing to {}".format(path))
             dim = conf.dim
@@ -51,7 +51,7 @@ def create(_id: str):
             print("ds shape {} {}".format(rows, cols))
             with h5py.File(path, 'w', libver='latest') as file:
                 ds = file.create_dataset(name="dx", shape=(rows, cols), dtype=float)
-                for i, line in enumerate(data):
+                for i, line in enumerate(_data):
                     if i % 1000 == 0 and i > 0:
                         print("wrote {} lines".format(i))
                     ds[i] = np.array([line])

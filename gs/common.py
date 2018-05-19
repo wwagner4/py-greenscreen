@@ -18,6 +18,31 @@ class Dim:
         return "<Dim rows:{} cols:{}>".format(self.rows, self.cols)
 
 
+class TrainFileNames:
+
+    def __init__(self, green: str, transp: str):
+        self.green = green
+        self.transp = transp
+
+    def __str__(self):
+        return "<TrainFileNames green:{} transp:{}>".format(self.green, self.transp)
+
+
+class Conf:
+
+    def __init__(self,
+                 dim: Dim,
+                 delta: int,
+                 data_file_type: str,  # Can be 'h5' or 'csv'
+                 train_file_names: List[TrainFileNames],
+                 around_indices: List[Tuple[int, int]]):
+        self.dim = dim
+        self.delta = delta
+        self.data_file_type = data_file_type
+        self.train_file_names = train_file_names
+        self.around_indices = around_indices
+
+
 # f: A function returning an Iterable
 def flatmap(f, list_of_list: Iterable[Any]) -> Iterable[Any]:
     return it.chain.from_iterable(map(f, list_of_list))
@@ -62,11 +87,50 @@ def csv_file(_id: str) -> str:
     return work_file(name)
 
 
-def dim(_id: str) -> Dim:
+def h5_file(_id: str) -> str:
+    name = "data_{}.h5".format(_id)
+    return work_file(name)
+
+
+def model_file(_id: str) -> str:
+    name = "model_{}.h5".format(_id)
+    return work_file(name)
+
+
+def conf(_id: str) -> Conf:
     if _id == 'img100':
-        return Dim(100, 133)
+        img_dir = "res/img100"
+        _delta = 10
+        return Conf(
+            dim=Dim(100, 133),
+            delta=_delta,
+            data_file_type='h5',
+            train_file_names=[
+                TrainFileNames(
+                    green=osp.join(img_dir, 'bsp1_green.png'),
+                    transp=osp.join(img_dir, 'bsp1_transp.png')),
+                TrainFileNames(
+                    green=osp.join(img_dir, 'bsp2_green.png'),
+                    transp=osp.join(img_dir, 'bsp2_transp.png'))],
+            around_indices=list(square_indices_rows_cols(_delta)))
     elif _id == 'img500':
-        return Dim(500, 667)
+        img_dir = "res/img500"
+        _delta = 10
+        return Conf(
+            dim=Dim(500, 667),
+            delta=_delta,
+            data_file_type='h5',
+            train_file_names=[
+                TrainFileNames(
+                    green=osp.join(img_dir, 'trainGreen01.png'),
+                    transp=osp.join(img_dir, 'trainTransp01.png')),
+                TrainFileNames(
+                    green=osp.join(img_dir, 'trainGreen02.png'),
+                    transp=osp.join(img_dir, 'trainTransp02.png')),
+                TrainFileNames(
+                    green=osp.join(img_dir, 'trainGreen03.png'),
+                    transp=osp.join(img_dir, 'trainTransp03.png'))],
+            around_indices=list(square_indices_rows_cols(_delta)))
     else:
         raise ValueError("invalid id '{}'".format(_id))
 

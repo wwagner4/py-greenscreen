@@ -6,7 +6,7 @@ import os.path as osp
 from PIL import Image
 
 
-def use(model_file: str):
+def use(_id: str):
     def plot_image(img: np.array, path: str):
         img1 = (img * 256).astype(np.uint8)
         image = Image.fromarray(img1, mode='RGBA')
@@ -39,7 +39,8 @@ def use(model_file: str):
         plot_image(timg, out)
         print("Plot image {}".format(out))
 
-    def use_img100():
+    def run():
+        model_file = co.model_file(_id)
         print("using model: '{}'".format(model_file))
         model: km.Sequential = km.load_model(model_file)
         print("loaded model: '{}'".format(model))
@@ -49,9 +50,9 @@ def use(model_file: str):
 
         delta = 10
 
-        for file in os.listdir(osp.join("res", "img100")):
+        for file in os.listdir(osp.join("res", _id)):
             if file.startswith("DSCN"):
-                img_file = os.path.join("res", "img100", file)
+                img_file = os.path.join("res", _id, file)
                 use_file(model, img_file, dim, delta)
 
-    use_img100()
+    run()

@@ -6,9 +6,9 @@ import os.path as osp
 from PIL import Image
 
 
-def use(_id: str, timestamp: str):
-    cfg = co.conf(_id)
-    in_dir = osp.join("res", _id)
+def use(_id: str, timestamp: str, root_dir: str):
+    cfg = co.conf(_id, root_dir)
+    in_dir = osp.join(root_dir, "res", _id)
     out_dir = co.work_dir("{}_{}".format(_id, timestamp))
 
     def plot_image(img: np.array, path: str):

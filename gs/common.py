@@ -110,9 +110,9 @@ def model_file(_id: str) -> str:
     return work_file(name)
 
 
-def conf(_id: str) -> Conf:
+def conf(_id: str, root_dir: str) -> Conf:
     if _id == 'img100':
-        img_dir = "res/img100"
+        img_dir = osp.join(root_dir, "res", _id)
         _delta = 10
         return Conf(
             dim=Dim(100, 133),
@@ -127,7 +127,7 @@ def conf(_id: str) -> Conf:
                     transp=osp.join(img_dir, 'bsp2_transp.png'))],
             around_indices=list(square_indices_rows_cols(_delta)))
     elif _id == 'img500':
-        img_dir = "res/img500"
+        img_dir = osp.join(root_dir, "res", _id)
         _delta = 10
         return Conf(
             dim=Dim(500, 667),

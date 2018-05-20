@@ -18,7 +18,7 @@ def model_a() -> Model:
     return model
 
 
-def train(_id: str):
+def train(_id: str, root_dir: str):
     def read_csv() -> Tuple[np.array, np.array]:
         path = co.csv_file(_id)
         print("reading from '{}'".format(path))
@@ -37,7 +37,7 @@ def train(_id: str):
         return _x, _y
 
     def read() -> Tuple[np.array, np.array]:
-        conf = co.conf(_id)
+        conf = co.conf(_id, root_dir)
         t = conf.data_file_type
         if t == 'csv':
             return read_csv()

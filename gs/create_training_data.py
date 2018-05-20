@@ -6,7 +6,7 @@ import numpy as np
 from gs import common as co
 
 
-def create(_id: str):
+def create(_id: str, root_dir: str):
     class TrainImages:
 
         def __init__(self, file_names: co.TrainFileNames, dim: co.Dim):
@@ -33,8 +33,8 @@ def create(_id: str):
             print("writing to {}".format(path))
             with open(path, 'w') as f:
                 for i, line in enumerate(data):
-                    if i % 1000 == 0 and i > 0:
-                        print("wrote {} lines".format(i))
+                    if i % 5000 == 0 and i > 0:
+                        print("wrote {} lines to ".format(i, path))
                     f.write(array_to_string(line) + "\n")
             return path
 
@@ -49,8 +49,8 @@ def create(_id: str):
             with h5py.File(path, 'w', libver='latest') as file:
                 ds = file.create_dataset(name="dx", shape=(rows, cols), dtype=float)
                 for i, line in enumerate(_data):
-                    if i % 1000 == 0 and i > 0:
-                        print("wrote {} lines".format(i))
+                    if i % 5000 == 0 and i > 0:
+                        print("wrote {} lines to {}".format(i, path))
                     ds[i] = np.array([line])
             return path
 
@@ -63,7 +63,7 @@ def create(_id: str):
             raise NameError("data file type can only be 'csv' or 'h5'. {}".format(t))
 
     def run():
-        cfg = co.conf(_id)
+        cfg = co.conf(_id, root_dir)
         nams = cfg.train_file_names
         delt = cfg.delta
         around_idxs = list(co.square_indices_rows_cols(delt))

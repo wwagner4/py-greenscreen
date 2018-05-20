@@ -1,0 +1,7 @@
+# start or resume the docker container in interactive mode
+docker start gs-conda -i
+
+# copy images from the container to the local filesystem.
+# work in the container /root/work/work-greenscreen
+docker cp gs-conda:/root/work/work-greenscreen/img100 /tmp/gs
+docker cp gs-conda:/root/work/work-greenscreen/img500_20180520_061910 /tmp/gs

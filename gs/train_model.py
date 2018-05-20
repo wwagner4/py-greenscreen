@@ -42,7 +42,7 @@ def train(_id: str):
         if t == 'csv':
             return read_csv()
         elif t == 'h5':
-            read_h5()
+            return read_h5()
         else:
             raise NameError("Invalid data file type {}. Correct values would be 'csv' or 'h5'".format(t))
 

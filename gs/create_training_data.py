@@ -41,13 +41,10 @@ def create(_id: str):
         def write_h5(_id: str, _data: Iterable[np.array], conf: co.Conf) -> str:
             path = co.h5_file(_id)
             print("writing to {}".format(path))
-            dim = conf.dim
-            delta = conf.delta
             img_cnt = len(conf.train_file_names)
-            r1 = dim.rows - 2 * delta
-            c1 = dim.cols - 2 * delta
-            rows = r1 * c1 * img_cnt
-            cols = len(conf.around_indices) * 3 + 1  # features plus one label
+            r, c = co.features_shape(conf)
+            rows = r * img_cnt  # Multiply with the amount of images
+            cols = c + 1  # Add one for the labels
             print("ds shape {} {}".format(rows, cols))
             with h5py.File(path, 'w', libver='latest') as file:
                 ds = file.create_dataset(name="dx", shape=(rows, cols), dtype=float)

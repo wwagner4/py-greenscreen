@@ -5,3 +5,8 @@ docker start gs-conda -i
 # work in the container /root/work/work-greenscreen
 docker cp gs-conda:/root/work/work-greenscreen/img100 /tmp/gs
 docker cp gs-conda:/root/work/work-greenscreen/img500_20180520_061910 /tmp/gs
+
+# Script for calling main.py
+#!/bin/bash
+ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+

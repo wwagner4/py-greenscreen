@@ -71,15 +71,28 @@ def square_indices_rows_cols(delta: int) -> Iterable[Tuple[int, int]]:
 
 
 def work_file(name: str, _dir: str = None) -> str:
+    """Returns path to a file in the workdirectory or to a file in a subdirectory if _dir is defined.
+    The work directory is created if it does not exist
+    """
     home_dir = Path.home()
     if _dir is None:
-        work_dir = osp.join(home_dir, 'work', 'work-greenscreen')
+        _work_dir = osp.join(home_dir, 'work', 'work-greenscreen')
     else:
-        work_dir = osp.join(home_dir, 'work', 'work-greenscreen', _dir)
-    if not osp.exists(work_dir):
-        print("created work dir: '{}'".format(work_dir))
-        os.makedirs(work_dir)
-    return osp.join(work_dir, name)
+        _work_dir = osp.join(home_dir, 'work', 'work-greenscreen', _dir)
+    if not osp.exists(_work_dir):
+        print("created work dir: '{}'".format(_work_dir))
+        os.makedirs(_work_dir)
+    return osp.join(_work_dir, name)
+
+
+def work_dir(name: str) -> str:
+    """Returns the path to a directory in the work directory. the directory is created if it does not exist"""
+    home_dir = Path.home()
+    _dir = osp.join(home_dir, 'work', 'work-greenscreen', name)
+    if not osp.exists(_dir):
+        print("created work dir: '{}'".format(_dir))
+        os.makedirs(_dir)
+    return _dir
 
 
 def csv_file(_id: str) -> str:
@@ -150,10 +163,23 @@ def load_image(path: str, _dim: Dim) -> np.array:
 
 
 def create_features(img: np.array, row: int, col: int, idx_rel: List[Tuple[int, int]]) -> np.array:
-    re = np.empty(0, dtype=float)
+    re = np.zeros((len(idx_rel) * 3,), dtype=np.float32)
+    idx = 0
     for row_off, col_off in idx_rel:
         row1 = row + row_off
         col1 = col + col_off
         green = img[row1, col1]
-        re = np.hstack((re, green))
+        re[idx] = green[0]
+        re[idx + 1] = green[1]
+        re[idx + 2] = green[2]
+        idx += 3
     return re
+
+
+def features_shape(cfg: Conf) -> Tuple[int, int]:
+    """Returns the shape of the features for one image"""
+    r1 = cfg.dim.rows - 2 * cfg.delta
+    c1 = cfg.dim.cols - 2 * cfg.delta
+    rows = r1 * c1
+    cols = len(cfg.around_indices) * 3  # Three because there is RGB
+    return rows, cols

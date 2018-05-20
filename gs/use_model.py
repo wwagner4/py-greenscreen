@@ -6,7 +6,7 @@ import os.path as osp
 from PIL import Image
 
 
-def use(_id: str):
+def use(_id: str, timestamp: str):
     def plot_image(img: np.array, path: str):
         img1 = (img * 256).astype(np.uint8)
         image = Image.fromarray(img1, mode='RGBA')
@@ -35,9 +35,9 @@ def use(_id: str):
                 print("made {} predictions for {}. latest value {}".format(cnt, img_file, prediction))
             cnt = cnt + 1
 
-        out = co.work_file(name=base + ".png", _dir="img100")
-        plot_image(timg, out)
+        out = co.work_file(name=base + ".png", _dir="{}_{}".format(_id, timestamp))
         print("Plot image {}".format(out))
+        plot_image(timg, out)
 
     def run():
         cfg = co.conf(_id)

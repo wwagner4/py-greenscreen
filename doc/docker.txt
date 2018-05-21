@@ -3,7 +3,10 @@ docker start gs-conda -i
 
 # copy images from the container to the local filesystem.
 # work in the container /root/work/work-greenscreen
-docker cp gs-conda:/root/work/work-greenscreen/img100 /tmp/gs
-docker cp gs-conda:/root/work/work-greenscreen/img500_20180520_061910 /tmp/gs
+docker cp gsc:/root/work/work-greenscreen/img100 /tmp/gs
+docker cp gsc:/root/work/work-greenscreen/img500_20180520_061910 /tmp/gs
 
-docker exec gs-conda /root/prj/py-greenscreen/start_main img100
+docker start gsc
+docker exec gsc /root/prj/py-greenscreen/start_main.sh img100 >> gs100_01.log &
+docker exec gsc /root/prj/py-greenscreen/start_main.sh img500 >> gs500_01.log &
+docker stop gsc

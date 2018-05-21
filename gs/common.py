@@ -33,12 +33,10 @@ class Conf:
     def __init__(self,
                  dim: Dim,
                  delta: int,
-                 data_file_type: str,  # Can be 'h5' or 'csv'
                  train_file_names: List[TrainFileNames],
                  around_indices: List[Tuple[int, int]]):
         self.dim = dim
         self.delta = delta
-        self.data_file_type = data_file_type
         self.train_file_names = train_file_names
         self.around_indices = around_indices
 
@@ -117,7 +115,6 @@ def conf(_id: str, root_dir: str) -> Conf:
         return Conf(
             dim=Dim(100, 133),
             delta=_delta,
-            data_file_type='h5',
             train_file_names=[
                 TrainFileNames(
                     green=osp.join(img_dir, 'bsp1_green.png'),
@@ -132,7 +129,6 @@ def conf(_id: str, root_dir: str) -> Conf:
         return Conf(
             dim=Dim(500, 667),
             delta=_delta,
-            data_file_type='h5',
             train_file_names=[
                 TrainFileNames(
                     green=osp.join(img_dir, 'trainGreen01.png'),

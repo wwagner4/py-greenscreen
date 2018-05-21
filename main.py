@@ -18,5 +18,5 @@ print("   rootdir   : {}".format(root_dir))
 print("   timestamp : {}".format(root_dir))
 
 ctd.create(_id, root_dir)
-tm.train(_id, root_dir)
+tm.train(_id)
 um.use(_id, timestamp, root_dir)

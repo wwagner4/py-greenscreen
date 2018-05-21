@@ -1,4 +1,7 @@
 #!/bin/bash
 ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-python ${ROOT}/main.py $1
+LOGFILE=/var/log/greenscreen.log
+echo "Logfile: ${LOGFILE}"
+
+python ${ROOT}/main.py $1 >> ${LOGFILE}

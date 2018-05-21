@@ -7,6 +7,8 @@ from gs import common as co
 
 
 def create(_id: str, root_dir: str):
+    cfg = co.conf(_id, root_dir)
+
     class TrainImages:
 
         def __init__(self, file_names: co.TrainFileNames, dim: co.Dim):
@@ -23,52 +25,29 @@ def create(_id: str, root_dir: str):
             labels = train_images.transp[row, col, 0]
             yield np.hstack((features, labels))
 
-    def write(_id: str, conf: co.Conf, data: Iterable[np.array]) -> str:
-        def write_csv(_id: str, data: Iterable[np.array]) -> str:
-            def array_to_string(arr: np.array) -> str:
-                _line = ''.join(['%7.5f;' % num for num in arr])
-                return _line[:-1]
-
-            path = co.csv_file(_id)
-            print("writing to {}".format(path))
-            with open(path, 'w') as f:
-                for i, line in enumerate(data):
-                    if i % 5000 == 0 and i > 0:
-                        print("wrote {} lines to ".format(i, path))
-                    f.write(array_to_string(line) + "\n")
-            return path
-
-        def write_h5(_id: str, _data: Iterable[np.array], conf: co.Conf) -> str:
-            path = co.h5_file(_id)
-            print("writing to {}".format(path))
-            img_cnt = len(conf.train_file_names)
-            r, c = co.features_shape(conf)
-            rows = r * img_cnt  # Multiply with the amount of images
-            cols = c + 1  # Add one for the labels
-            print("ds shape {} {}".format(rows, cols))
-            with h5py.File(path, 'w', libver='latest') as file:
-                ds = file.create_dataset(name="dx", shape=(rows, cols), dtype=float)
-                for i, line in enumerate(_data):
-                    if i % 5000 == 0 and i > 0:
-                        print("wrote {} lines to {}".format(i, path))
-                    ds[i] = np.array([line])
-            return path
-
-        t = conf.data_file_type
-        if t == 'csv':
-            return write_csv(_id, data)
-        elif t == 'h5':
-            return write_h5(_id, data, conf)
-        else:
-            raise NameError("data file type can only be 'csv' or 'h5'. {}".format(t))
+    def write_h5(_id: str, _data: Iterable[np.array]) -> str:
+        path = co.h5_file(_id)
+        print("writing to {}".format(path))
+        img_cnt = len(cfg.train_file_names)
+        r, c = co.features_shape(cfg)
+        rows = r * img_cnt  # Multiply with the amount of images
+        print("ds shape {} {}".format(rows * img_cnt, c))
+        with h5py.File(path, 'w', libver='latest') as file:
+            dsx = file.create_dataset(name="dsx", shape=(rows, c), dtype=float)
+            dsy = file.create_dataset(name="dsy", shape=(rows, 1), dtype=float)
+            for i, line in enumerate(_data):
+                if i % 5000 == 0 and i > 0:
+                    print("wrote {} lines to {}".format(i, path))
+                dsx[i] = line[:-1]
+                dsy[i] = line[-1:]
+        return path
 
     def run():
-        cfg = co.conf(_id, root_dir)
         nams = cfg.train_file_names
         delt = cfg.delta
         around_idxs = list(co.square_indices_rows_cols(delt))
         datas = co.flatmap(lambda _nams: create_rows(_nams, around_idxs, cfg), nams)
-        out_file = write(_id, cfg, datas)
+        out_file = write_h5(_id, datas)
         print("wrote data to'{}'".format(out_file))
 
     run()

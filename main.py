@@ -15,7 +15,7 @@ _id = sys.argv[1]
 print("Arguments")
 print("   id        : {}".format(_id))
 print("   rootdir   : {}".format(root_dir))
-print("   timestamp : {}".format(root_dir))
+print("   timestamp : {}".format(timestamp))
 
 ctd.create(_id, root_dir)
 tm.train(_id)

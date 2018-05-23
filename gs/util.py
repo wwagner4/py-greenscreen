@@ -1,7 +1,7 @@
 """
 various utillty functions used outside the training process
 """
-from gs.train_model import model_a
+from gs.config import model_a
 
 
 def model_to_ymal():

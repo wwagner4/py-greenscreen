@@ -3,6 +3,7 @@ import os.path as osp
 
 import wand.image as wim
 
+
 def is_jpg_file(file_name: str):
     return file_name.upper().endswith('JPG')
 

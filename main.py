@@ -1,6 +1,7 @@
 from gs import create_training_data as ctd
 from gs import train_model as tm
 from gs import use_model as um
+from gs import config as cf
 import time
 import sys
 import os.path as osp
@@ -17,6 +18,8 @@ print("   id        : {}".format(_id))
 print("   rootdir   : {}".format(root_dir))
 print("   timestamp : {}".format(timestamp))
 
+cfg = cf.conf(_id, root_dir)
+
 ctd.create(_id, root_dir)
-tm.train(_id)
+tm.train(_id, cfg)
 um.use(_id, timestamp, root_dir)

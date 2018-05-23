@@ -8,6 +8,9 @@ import matplotlib.pylab as pl
 import numpy as np
 
 
+#  from keras import Model
+
+
 class Dim:
 
     def __init__(self, rows: int, cols: int):
@@ -34,11 +37,13 @@ class Conf:
                  dim: Dim,
                  delta: int,
                  train_file_names: List[TrainFileNames],
-                 around_indices: List[Tuple[int, int]]):
+                 around_indices: List[Tuple[int, int]],
+                 model):  # function to model
         self.dim = dim
         self.delta = delta
         self.train_file_names = train_file_names
         self.around_indices = around_indices
+        self.model = model
 
 
 # f: A function returning an Iterable
@@ -50,22 +55,6 @@ def core_indices(rows: int, cols: int, delta: int) -> Iterable[Tuple[int, int]]:
     for i in range(delta, rows - delta):
         for j in range(delta, cols - delta):
             yield (i, j)
-
-
-def square_indices_rows(delta: int) -> Iterable[Tuple[int, int]]:
-    for i in range(-delta, delta + 1):
-        for j in range(-delta, delta + 1):
-            yield (i, j)
-
-
-def square_indices_cols(delta: int) -> Iterable[Tuple[int, int]]:
-    for i in range(-delta, delta + 1):
-        for j in range(-delta, delta + 1):
-            yield (j, i)
-
-
-def square_indices_rows_cols(delta: int) -> Iterable[Tuple[int, int]]:
-    return flatmap(lambda l: l, [square_indices_rows(delta), square_indices_cols(delta)])
 
 
 def work_file(name: str, _dir: str = None) -> str:
@@ -106,42 +95,6 @@ def h5_file(_id: str) -> str:
 def model_file(_id: str) -> str:
     name = "model_{}.h5".format(_id)
     return work_file(name)
-
-
-def conf(_id: str, root_dir: str) -> Conf:
-    if _id == 'img100':
-        img_dir = osp.join(root_dir, "res", _id)
-        _delta = 10
-        return Conf(
-            dim=Dim(100, 133),
-            delta=_delta,
-            train_file_names=[
-                TrainFileNames(
-                    green=osp.join(img_dir, 'bsp1_green.png'),
-                    transp=osp.join(img_dir, 'bsp1_transp.png')),
-                TrainFileNames(
-                    green=osp.join(img_dir, 'bsp2_green.png'),
-                    transp=osp.join(img_dir, 'bsp2_transp.png'))],
-            around_indices=list(square_indices_rows_cols(_delta)))
-    elif _id == 'img500':
-        img_dir = osp.join(root_dir, "res", _id)
-        _delta = 10
-        return Conf(
-            dim=Dim(500, 667),
-            delta=_delta,
-            train_file_names=[
-                TrainFileNames(
-                    green=osp.join(img_dir, 'trainGreen01.png'),
-                    transp=osp.join(img_dir, 'trainTransp01.png')),
-                TrainFileNames(
-                    green=osp.join(img_dir, 'trainGreen02.png'),
-                    transp=osp.join(img_dir, 'trainTransp02.png')),
-                TrainFileNames(
-                    green=osp.join(img_dir, 'trainGreen03.png'),
-                    transp=osp.join(img_dir, 'trainTransp03.png'))],
-            around_indices=list(square_indices_rows_cols(_delta)))
-    else:
-        raise ValueError("invalid id '{}'".format(_id))
 
 
 def load_image(path: str, _dim: Dim) -> np.array:

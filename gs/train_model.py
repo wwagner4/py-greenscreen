@@ -1,21 +1,9 @@
-from keras import Model
-from keras.layers import Dense
-from keras.models import Sequential
-from keras.optimizers import Adam
-
 from gs import common as co
 import h5py
+from keras.optimizers import Adam
 
 
-def model_a() -> Model:
-    model = Sequential()
-    model.add(Dense(1000, input_dim=2646, activation='sigmoid'))
-    model.add(Dense(100, activation='sigmoid'))
-    model.add(Dense(1, activation='sigmoid'))
-    return model
-
-
-def train(_id: str):
+def train(_id: str, cfg: co.Conf):
     def run():
         path = co.h5_file(_id)
         print("reading from '{}'".format(path))
@@ -25,7 +13,7 @@ def train(_id: str):
             print("x {}".format(x.shape))
             print("y {}".format(y.shape))
 
-            model = model_a()
+            model = cfg.model()
             print("Defined model {}".format(model.to_yaml()))
             print("--------------------------------------------")
             adam = Adam(lr=0.0005)

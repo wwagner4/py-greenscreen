@@ -1,5 +1,4 @@
 from gs import common as co
-from gs import config as cf
 import keras.models as km
 import numpy as np
 import os
@@ -7,10 +6,8 @@ import os.path as osp
 from PIL import Image
 
 
-def use(_id: str, timestamp: str, root_dir: str):
-    cfg = cf.conf(_id, root_dir)
-    in_dir = osp.join(root_dir, "res", _id)
-    out_dir = co.work_dir("{}_{}".format(_id, timestamp))
+def use(cfg: co.Conf, timestamp: str):
+    out_dir = co.work_dir("{}_{}".format(cfg.id, timestamp))
 
     def plot_image(img: np.array, path: str):
         img1 = (img * 256).astype(np.uint8)
@@ -57,15 +54,15 @@ def use(_id: str, timestamp: str, root_dir: str):
         plot_image(timg, out)
 
     def run():
-        model_file = co.model_file(_id)
+        model_file = co.model_file(cfg.id)
         print("using model: '{}'".format(model_file))
         model: km.Sequential = km.load_model(model_file)
-        print("input directory: '{}'".format(in_dir))
+        print("input directory: '{}'".format(cfg.img_dir))
         print("output directory: '{}'".format(out_dir))
-        for file in os.listdir(in_dir):
+        for file in os.listdir(cfg.img_dir):
             print("conduct file {}".format(file))
             if file.startswith("DSCN"):
-                img_file = osp.join(in_dir, file)
+                img_file = osp.join(cfg.img_dir, file)
                 use_file(model, img_file)
 
     run()

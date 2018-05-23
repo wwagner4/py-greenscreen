@@ -13,8 +13,10 @@ def conf(_id: str, root_dir: str) -> co.Conf:
         img_dir = osp.join(root_dir, "res", _id)
         _delta = 10
         return co.Conf(
+            _id=_id,
             dim=co.Dim(100, 133),
             delta=_delta,
+            img_dir=img_dir,
             train_file_names=[
                 co.TrainFileNames(
                     green=osp.join(img_dir, 'bsp1_green.png'),
@@ -28,8 +30,10 @@ def conf(_id: str, root_dir: str) -> co.Conf:
         img_dir = osp.join(root_dir, "res", _id)
         _delta = 10
         return co.Conf(
+            _id=_id,
             dim=co.Dim(500, 667),
             delta=_delta,
+            img_dir=img_dir,
             train_file_names=[
                 co.TrainFileNames(
                     green=osp.join(img_dir, 'trainGreen01.png'),

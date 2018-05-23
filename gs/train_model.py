@@ -3,9 +3,9 @@ import h5py
 from keras.optimizers import Adam
 
 
-def train(_id: str, cfg: co.Conf):
+def train(cfg: co.Conf):
     def run():
-        path = co.h5_file(_id)
+        path = co.h5_file(cfg.id)
         print("reading from '{}'".format(path))
         with h5py.File(path, 'r', libver='latest') as h5_file:
             x = h5_file['dsx']
@@ -23,7 +23,7 @@ def train(_id: str, cfg: co.Conf):
             model.fit(x, y, epochs=4, batch_size=20, shuffle='batch')
             print("Fit model {}".format(model))
 
-            model_file = co.model_file(_id)
+            model_file = co.model_file(cfg.id)
             model.save(model_file)
 
             print("Saved model to {}".format(model_file))

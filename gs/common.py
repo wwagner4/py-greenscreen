@@ -8,9 +8,6 @@ import matplotlib.pylab as pl
 import numpy as np
 
 
-#  from keras import Model
-
-
 class Dim:
 
     def __init__(self, rows: int, cols: int):
@@ -34,14 +31,18 @@ class TrainFileNames:
 class Conf:
 
     def __init__(self,
+                 _id: str,
                  dim: Dim,
                  delta: int,
+                 img_dir: str,
                  train_file_names: List[TrainFileNames],
                  around_indices: List[Tuple[int, int]],
                  model):  # function to model
+        self.id = _id
         self.dim = dim
         self.delta = delta
         self.train_file_names = train_file_names
+        self.img_dir = img_dir
         self.around_indices = around_indices
         self.model = model
 

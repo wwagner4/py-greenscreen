@@ -4,11 +4,9 @@ import h5py
 import numpy as np
 
 from gs import common as co
-from gs import config as cf
 
 
-def create(_id: str, root_dir: str):
-    cfg = cf.conf(_id, root_dir)
+def create(cfg: co.Conf):
 
     class TrainImages:
 
@@ -47,7 +45,7 @@ def create(_id: str, root_dir: str):
         nams = cfg.train_file_names
         around_idxs = list(cfg.around_indices)
         datas = co.flatmap(lambda _nams: create_rows(_nams, around_idxs, cfg), nams)
-        out_file = write_h5(_id, datas)
+        out_file = write_h5(cfg.id, datas)
         print("wrote data to'{}'".format(out_file))
 
     run()

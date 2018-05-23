@@ -20,6 +20,6 @@ print("   timestamp : {}".format(timestamp))
 
 cfg = cf.conf(_id, root_dir)
 
-ctd.create(_id, root_dir)
-tm.train(_id, cfg)
-um.use(_id, timestamp, root_dir)
+ctd.create(cfg)
+tm.train(cfg)
+um.use(cfg, timestamp)

@@ -6,6 +6,8 @@ from typing import Tuple, Iterable, Any, List
 
 import matplotlib.pylab as pl
 import numpy as np
+from keras.optimizers import Optimizer
+from keras import Model
 
 
 class Dim:
@@ -37,7 +39,8 @@ class Conf:
                  img_dir: str,
                  train_file_names: List[TrainFileNames],
                  around_indices: List[Tuple[int, int]],
-                 model):  # function to model
+                 model: Model,  # function to model
+                 optimizer: Optimizer):
         self.id = _id
         self.dim = dim
         self.delta = delta
@@ -45,6 +48,7 @@ class Conf:
         self.img_dir = img_dir
         self.around_indices = around_indices
         self.model = model
+        self.optimizer = optimizer
 
 
 # f: A function returning an Iterable

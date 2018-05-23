@@ -1,6 +1,5 @@
 from gs import common as co
 import h5py
-from keras.optimizers import Adam
 
 
 def train(cfg: co.Conf):
@@ -16,8 +15,7 @@ def train(cfg: co.Conf):
             model = cfg.model()
             print("Defined model {}".format(model.to_yaml()))
             print("--------------------------------------------")
-            adam = Adam(lr=0.0005)
-            model.compile(loss='binary_crossentropy', optimizer=adam, metrics=['accuracy'])
+            model.compile(loss='binary_crossentropy', optimizer=cfg.optimizer, metrics=['accuracy'])
             print("Compiled model {}".format(model))
 
             model.fit(x, y, epochs=4, batch_size=20, shuffle='batch')

@@ -58,6 +58,7 @@ def model_a() -> Model:
     model.add(Dense(1000, input_dim=2646, activation='sigmoid'))
     model.add(Dense(100, activation='sigmoid'))
     model.add(Dense(1, activation='sigmoid'))
+    print("created model_a {}".format(model))
     return model
 
 

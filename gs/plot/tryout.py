@@ -10,52 +10,52 @@ class Data:
         self.x = x
         self.y = y
 
+    def __str__(self):
+        return "Data[grp:{} x:{} y:{}]".format(self.grp, self.x, self.y)
 
-def plot(data: List[Data]):
-    def extract(_data, key: str) -> float:
-        return vars(_data).get(key)
-
-    def extract_x(_data) -> float:
-        return extract(_data, 'x')
-
-    def extract_y(_data) -> float:
-        return extract(_data, 'y')
-
-    xs = list(map(extract_x, data))
-    ys = list(map(extract_y, data))
-
-    for x in xs:
-        print("x:{}".format(x))
-    for y in ys:
-        print("y:{}".format(y))
-
-    fig = plt.figure()
-    fig.add_subplot(111)
-
-    plt.plot(xs, ys, linewidth=0.5, label='label')
-    plt.legend()
-
-    file = co.work_file('p1.png')
-    fig.savefig(fname=file, dpi=300, papertype='a7', format='png')
-    print("saved img to {}".format(file))
+    __repr__ = __str__
 
 
-def run1():
-    d1 = Data("a", 0.0, 0.0)
-    vd1 = vars(d1)
-    for k in vd1.keys():
-        v = vd1.get(k)
-        print("{} = {}".format(k, v))
+class Plotter:
 
+    def _group(self, data_list: List[Data]) -> List[List[Data]]:
+        grps = set(map(lambda x: x.grp, data_list))
+        return [[dat for dat in data_list if dat.grp == grp] for grp in grps]
+
+    def plot(self, data: List[Data], file: str):
+        def extract(_data, key: str) -> float:
+            return vars(_data).get(key)
+
+        def extract_x(_data) -> float:
+            return extract(_data, 'x')
+
+        def extract_y(_data) -> float:
+            return extract(_data, 'y')
+
+        fig = plt.figure()
+        fig.add_subplot(111)
+        for grp in self._group(data):
+            xs = list(map(extract_x, grp))
+            ys = list(map(extract_y, grp))
+            label = grp[0].grp
+            plt.plot(xs, ys, linewidth=2, label=label)
+            plt.legend()
+
+        fig.savefig(fname=file, dpi=300, papertype='a7', format='png')
+        print("saved img to {}".format(file))
+
+
+def tryout01():
     data_a = [
         Data('a', 0.0, 0.1),
         Data('a', 1.0, 0.2),
         Data('a', 2.0, 0.5),
-        Data('a', 3.0, 0.7),
-        Data('a', 4.0, 0.6),
-        Data('a', 5.0, 0.8)
+        Data('b', 1.0, 0.7),
+        Data('b', 4.0, 0.6),
+        Data('b', 5.0, 0.8)
     ]
-    plot(data_a)
+    file = co.work_file('tryout01.png')
+    Plotter().plot(data_a, file)
 
 
-run1()
+tryout01()

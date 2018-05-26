@@ -39,38 +39,13 @@ class Dia:
 
 
 def plot_dia(dia: Dia, file: str):
-    def extract(_data, key: str) -> float:
-        return vars(_data).get(key)
-
-    def extract_x(_data) -> float:
-        return extract(_data, 'x')
-
-    def extract_y(_data) -> float:
-        return extract(_data, 'y')
-
     fig = plt.figure()
     fig.add_subplot(111)
-    for dr in dia.data:
-        xs = list(map(extract_x, dr.data))
-        ys = list(map(extract_y, dr.data))
-        plt.plot(xs, ys, linewidth=0.5, label=dr.name)
-        plt.legend()
-        if dia.title:
-            plt.title(dia.title)
-
+    _plot_dia(dia)
     fig.savefig(fname=file, dpi=300, papertype='a5', format='png')
 
 
 def plot_multi_dia(dias: Iterable[Dia], rows: int, cols: int, file: str):
-    def extract(_data, key: str) -> float:
-        return vars(_data).get(key)
-
-    def extract_x(_data) -> float:
-        return extract(_data, 'x')
-
-    def extract_y(_data) -> float:
-        return extract(_data, 'y')
-
     _dias = list(dias)
     if len(_dias) == 1:
         plot_dia(_dias[0], file)
@@ -78,14 +53,27 @@ def plot_multi_dia(dias: Iterable[Dia], rows: int, cols: int, file: str):
         fig = plt.figure()
         for i, dia in enumerate(dias):
             fig.add_subplot(rows, cols, i + 1)
-            for dr in dia.data:
-                xs = list(map(extract_x, dr.data))
-                ys = list(map(extract_y, dr.data))
-                plt.plot(xs, ys, linewidth=0.5, label=dr.name)
-                plt.legend()
-                if dia.title:
-                    plt.title(dia.title)
+            _plot_dia(dia)
         fig.savefig(fname=file, dpi=300, papertype='a5', format='png')
+
+
+def _plot_dia(dia: Dia):
+    def extract(_data, key: str) -> float:
+        return vars(_data).get(key)
+
+    def extract_x(_data) -> float:
+        return extract(_data, 'x')
+
+    def extract_y(_data) -> float:
+        return extract(_data, 'y')
+
+    for dr in dia.data:
+        xs = list(map(extract_x, dr.data))
+        ys = list(map(extract_y, dr.data))
+        plt.plot(xs, ys, linewidth=0.5, label=dr.name)
+        plt.legend()
+        if dia.title:
+            plt.title(dia.title)
 
 
 def tryout():
@@ -96,12 +84,12 @@ def tryout():
         return XY(x, y)
 
     def data_b(x: float) -> XY:
-        y = 100 * math.sin(x)
+        y = 10 * x * math.sin(x)
         return XY(x, y)
 
-    xs = np.arange(-5, 5, 0.1)
-    data_a = DataRow(map(data_a, xs), "A")
-    data_b = DataRow(map(data_b, xs), "B")
+    xs = np.arange(0, 15, 0.1)
+    data_a = DataRow(map(data_a, xs), "power 2")
+    data_b = DataRow(map(data_b, xs), "sinus")
 
     data = [data_a, data_b]
     dia = Dia(data, "Some Testdata")
@@ -119,7 +107,7 @@ def tryout_multi():
         return XY(x, y)
 
     def data_b(x: float) -> XY:
-        y = 100 * math.sin(x)
+        y = x * math.sin(x)
         return XY(x, y)
 
     xs = np.arange(-5, 5, 0.1)

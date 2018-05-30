@@ -3,6 +3,7 @@ import os
 import os.path as osp
 from pathlib import Path
 from typing import Tuple, Iterable, Any, List, Dict
+import random as ran
 
 import matplotlib.pylab as pl
 import numpy as np
@@ -58,24 +59,22 @@ def flatmap(f, list_of_list: Iterable[Any]) -> Iterable[Any]:
 
 
 def categorize(iterable: Iterable, size: int,
-               perc1: int = 60, perc2: int = 20,
+               size1: int, size2: int,
                l1: str = 'a', l2: str = 'a', l3: str = 'c') -> Iterable[Tuple]:
     """categorizes an iterable in three categories
     size: Size of the iterable. Must be known in advace
-    perc1: Percentage of the first category
-    perc2: Percentage of the second category
+    size1: Size of the first category
+    size2: Size of the second category. Third category is the rest.
     l1, l2, l3: Names of the categories
     returns an iterable of Tuples (category, obj)"""
-    assert perc1 <= 100, "perc1 greater 100. {}".format(perc1)
-    assert perc2 <= 100, "perc2 greater 100. {}".format(perc2)
-    assert perc1 + perc2 <= 100, "perc1 + perc2 greater 100. {}, {}".format(perc1, perc2)
+    assert size1 <= size, "size1 > size. {}".format(size1)
+    assert size2 <= size, "size2 > size. {}".format(size2)
+    assert size1 + size2 <= size, "size1 + size2 > size. {}, {}".format(size1, size2)
 
-    b0 = size * perc1 / 100.0
-    b1 = size * (perc1 + perc2) / 100
+    b0 = size1
+    b1 = size1 + size2
 
     def cdict() -> Dict[int, Any]:
-        import random as ran
-
         idxs = np.arange(0, size)
         ran.shuffle(idxs)
         re = {}

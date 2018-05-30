@@ -2,7 +2,7 @@ import itertools as it
 import os
 import os.path as osp
 from pathlib import Path
-from typing import Tuple, Iterable, Any, List
+from typing import Tuple, Iterable, Any, List, Dict
 
 import matplotlib.pylab as pl
 import numpy as np
@@ -51,9 +51,46 @@ class Conf:
         self.optimizer = optimizer
 
 
-# f: A function returning an Iterable
 def flatmap(f, list_of_list: Iterable[Any]) -> Iterable[Any]:
+    """maps the elements of a list of list of elements to a liet of elements
+    f: a function returning an iterable"""
     return it.chain.from_iterable(map(f, list_of_list))
+
+
+def categorize(iterable: Iterable, size: int,
+               perc1: int = 60, perc2: int = 20,
+               l1: str = 'a', l2: str = 'a', l3: str = 'c') -> Iterable[Tuple]:
+    """categorizes an iterable in three categories
+    size: Size of the iterable. Must be known in advace
+    perc1: Percentage of the first category
+    perc2: Percentage of the second category
+    l1, l2, l3: Names of the categories
+    returns an iterable of Tuples (category, obj)"""
+    assert perc1 <= 100, "perc1 greater 100. {}".format(perc1)
+    assert perc2 <= 100, "perc2 greater 100. {}".format(perc2)
+    assert perc1 + perc2 <= 100, "perc1 + perc2 greater 100. {}, {}".format(perc1, perc2)
+
+    b0 = size * perc1 / 100.0
+    b1 = size * (perc1 + perc2) / 100
+
+    def cdict() -> Dict[int, Any]:
+        import random as ran
+
+        idxs = np.arange(0, size)
+        ran.shuffle(idxs)
+        re = {}
+        for i, idx in enumerate(idxs):
+            if i < b0:
+                re[idx] = l1
+            elif i < b1:
+                re[idx] = l2
+            else:
+                re[idx] = l3
+        return re
+
+    cd = cdict()
+    for _idx, obj in enumerate(iterable):
+        yield (cd[_idx], obj)
 
 
 def core_indices(rows: int, cols: int, delta: int) -> Iterable[Tuple[int, int]]:

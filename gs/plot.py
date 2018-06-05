@@ -1,4 +1,4 @@
-from typing import Iterable
+from typing import Iterable, Tuple
 
 import matplotlib.pyplot as plt
 import gs.common as co
@@ -27,10 +27,23 @@ class DataRow:
     __repr__ = __str__
 
 
+class Axis:
+    def __init__(self, title: str = "", lim: Tuple = None):
+        self.title = title
+        self.lim = lim
+
+    def __str__(self):
+        return "Axis[title:{} lim:{}]".format(self.title, self.lim)
+
+    __repr__ = __str__
+
+
 class Dia:
-    def __init__(self, data: Iterable[DataRow], title: str = ""):
+    def __init__(self, data: Iterable[DataRow], title: str = "", xaxis: Axis = Axis(), yaxis: Axis = Axis()):
         self.title = title
         self.data = data
+        self.xaxis = xaxis
+        self.yaxis = yaxis
 
     def __str__(self):
         return "Dia[title:{} data:{}]".format(self.title, self.title)
@@ -54,6 +67,7 @@ def plot_multi_dia(dias: Iterable[Dia], rows: int, cols: int, file: str):
         for i, dia in enumerate(dias):
             fig.add_subplot(rows, cols, i + 1)
             _plot_dia(dia)
+        plt.tight_layout()
         fig.savefig(fname=file, dpi=300, papertype='a5', format='png')
 
 
@@ -72,11 +86,21 @@ def _plot_dia(dia: Dia):
         ys = list(map(extract_y, dr.data))
         plt.plot(xs, ys, linewidth=0.5, label=dr.name)
         plt.legend()
+        if dia.xaxis.title:
+            plt.xlabel(dia.xaxis.title)
+        if isinstance(dia.xaxis.lim, Tuple):
+            plt.xlim(dia.xaxis.lim)
+
+        if dia.yaxis.title:
+            plt.ylabel(dia.yaxis.title)
+        if isinstance(dia.yaxis.lim, Tuple):
+            plt.ylim(dia.yaxis.lim)
+
         if dia.title:
             plt.title(dia.title)
 
 
-def tryout():
+def _tryout():
     import math
 
     def data_a(x: float) -> XY:
@@ -92,14 +116,16 @@ def tryout():
     data_b = DataRow(map(data_b, xs), "sinus")
 
     data = [data_a, data_b]
-    dia = Dia(data, "Some Testdata")
+    dia = Dia(data, "Some Testdata",
+              xaxis=Axis(title="x axis", lim=(2, 20)),
+              yaxis=Axis(lim=(-500, 500)))
 
-    file = co.work_file('tryout_001.png')
+    file = co.work_file('tryout_plot_001.png')
     plot_dia(dia, file)
     print("wrote to file:{}".format(file))
 
 
-def tryout_multi():
+def _tryout_multi():
     import math
 
     def data_a(x: float) -> XY:
@@ -110,17 +136,25 @@ def tryout_multi():
         y = x * math.sin(x)
         return XY(x, y)
 
+    def data_c(x: float) -> XY:
+        y = x * math.sin(x * 1.1)
+        return XY(x, y)
+
     xs = np.arange(-5, 5, 0.1)
     data_a = DataRow(map(data_a, xs), "A")
     data_b = DataRow(map(data_b, xs), "B")
+    data_c = DataRow(map(data_c, xs), "C")
 
-    dia_a = Dia([data_a], "Some Test Data")
-    dia_b = Dia([data_b])
+    dia_a = Dia([data_a], "Some Test Data",
+                xaxis=Axis("xxx aaa", lim=(-10, 10)),
+                yaxis=Axis(lim=(0, 40)))
+    dia_b = Dia([data_b, data_c], 'Sinus', yaxis=Axis("amplitude"))
 
-    file = co.work_file('tryout_multi_001.png')
+    file = co.work_file('tryout_plot_multi_001.png')
     plot_multi_dia([dia_a, dia_b], 2, 1, file)
     print("wrote to file:{}".format(file))
 
 
-# tryout()
-# tryout_multi()
+if __name__ == "__main__":
+    _tryout()
+    _tryout_multi()

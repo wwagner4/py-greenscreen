@@ -3,6 +3,7 @@ from gs import train_model as tm
 from gs import train_model_opt as tmo
 from gs import use_model as um
 from gs import config as cf
+from gs import plot as pl
 import time
 import sys
 import os.path as osp
@@ -28,8 +29,25 @@ def fullRun():
     um.use(cfg, timestamp)
 
 
+def create():
+    root_dir = osp.dirname(sys.argv[0])
+    _id = 'img100'
+
+    print("Arguments")
+    print("   id        : {}".format(_id))
+    print("   rootdir   : {}".format(root_dir))
+    cfg = cf.conf(_id, root_dir)
+    ctd.create(cfg)
+    print("FINISHED")
+
+
 def opt():
     tmo._run()
 
+
+def plot():
+    pl._tryout_multi()
+    pl._tryout()
+    
 
 opt()

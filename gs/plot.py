@@ -1,8 +1,9 @@
 from typing import Iterable, Tuple
 
 import matplotlib.pyplot as plt
-import gs.common as co
 import numpy as np
+
+from gs import common as co
 
 
 class XY:
@@ -51,25 +52,35 @@ class Dia:
     __repr__ = __str__
 
 
-def plot_dia(dia: Dia, file: str):
-    fig = plt.figure()
+def plot_dia(dia: Dia, file: str, img_size: Tuple = None):
+    fig = _create_figure(img_size)
     fig.add_subplot(111)
     _plot_dia(dia)
-    fig.savefig(fname=file, dpi=300, papertype='a3', format='png')
+    fig.savefig(fname=file, format='png')
 
 
-def plot_multi_dia(dias: Iterable[Dia], rows: int, cols: int, file: str):
+def plot_multi_dia(dias: Iterable[Dia], rows: int, cols: int, file: str, img_size: Tuple = None):
     _dias = list(dias)
     if len(_dias) == 1:
         plot_dia(_dias[0], file)
     elif len(_dias) > 1:
-        fig = plt.figure()
+        fig = _create_figure(img_size)
         for i, dia in enumerate(dias):
             fig.add_subplot(rows, cols, i + 1)
             _plot_dia(dia)
         plt.tight_layout()
-        fig.savefig(fname=file, dpi=300, papertype='a5', format='png')
+        fig.savefig(fname=file, format='png')
 
+
+def _create_figure(img_size: Tuple) -> plt.Figure:
+    if isinstance(img_size, Tuple):
+        base = 7.0
+        ratio = img_size[1] / img_size[0]
+        x = base
+        y = base * ratio
+        dpi = img_size[0] / base
+        return plt.figure(figsize=(x, y), dpi=dpi)
+    return plt.figure()
 
 def _plot_dia(dia: Dia):
     def extract(_data, key: str) -> float:
@@ -84,7 +95,7 @@ def _plot_dia(dia: Dia):
     for dr in dia.data:
         xs = list(map(extract_x, dr.data))
         ys = list(map(extract_y, dr.data))
-        plt.plot(xs, ys, linewidth=0.5, label=dr.name)
+        plt.plot(xs, ys, linewidth=1.0, label=dr.name)
         plt.legend()
         if dia.xaxis.title:
             plt.xlabel(dia.xaxis.title)
@@ -120,7 +131,7 @@ def _tryout():
               xaxis=Axis(title="x axis", lim=(2, 20)),
               yaxis=Axis(lim=(-500, 500)))
 
-    file = co.work_file('tryout_plot_001.png')
+    file = co.work_file('tryout_plot_002.png')
     plot_dia(dia, file)
     print("wrote to file:{}".format(file))
 
@@ -150,8 +161,8 @@ def _tryout_multi():
                 yaxis=Axis(lim=(0, 40)))
     dia_b = Dia([data_b, data_c], 'Sinus', yaxis=Axis("amplitude"))
 
-    file = co.work_file('tryout_plot_multi_001.png')
-    plot_multi_dia([dia_a, dia_b], 2, 1, file)
+    file = co.work_file('tryout_plot_multi_002.png')
+    plot_multi_dia([dia_a, dia_b], 1, 2, file, img_size=(3000, 3000))
     print("wrote to file:{}".format(file))
 
 

@@ -8,7 +8,7 @@ import h5py
 def _run():
     epoche_cnt = 10
     batch_sizes = [5, 10, 20, 40]
-    runid = "004"
+    runid = "w001"
     learning_rates = [0.00020, 0.00015, 0.00010, 0.00005]
 
     epoches = list(range(0, epoche_cnt))
@@ -54,5 +54,5 @@ def _run():
             dias.append(dia)
 
         file = co.work_file(name="opt_adam_{}.png".format(runid), _dir='opt')
-        pl.plot_multi_dia(dias, rows=2, cols=2, file=file)
+        pl.plot_multi_dia(dias, rows=2, cols=2, file=file, img_size=(3000, 2000))
         print("plot result to {}".format(file))

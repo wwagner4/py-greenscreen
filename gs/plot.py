@@ -55,7 +55,7 @@ def plot_dia(dia: Dia, file: str):
     fig = plt.figure()
     fig.add_subplot(111)
     _plot_dia(dia)
-    fig.savefig(fname=file, dpi=300, papertype='a5', format='png')
+    fig.savefig(fname=file, dpi=300, papertype='a3', format='png')
 
 
 def plot_multi_dia(dias: Iterable[Dia], rows: int, cols: int, file: str):

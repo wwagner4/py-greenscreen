@@ -6,12 +6,10 @@ import h5py
 
 
 def _run():
-    epoche_cnt = 7
-    batch_sizes = [5, 10, 20, 30]
-    runid = "003"
-    learning_rates = [0.00015, 0.00010, 0.00005]
-    # learning_rates = [0.001, 0.0005, 0.0001, 0.00005, 0.00001]
-    # learning_rates = [0.001, 0.0005]
+    epoche_cnt = 10
+    batch_sizes = [5, 10, 20, 40]
+    runid = "004"
+    learning_rates = [0.00020, 0.00015, 0.00010, 0.00005]
 
     epoches = list(range(0, epoche_cnt))
     _cfg = cfg.conf('img100', '..')
@@ -39,7 +37,7 @@ def _run():
 
     def _train01(batch_size: int, _h5_file) -> pl.Dia:
         data_rows = []
-        title = "adam learning rate, batch size {}".format(batch_size)
+        title = "adam, batch size {}".format(batch_size)
         for _lrnr, _lr in enumerate(learning_rates):
             data_rows.append(_train(_lr, _lrnr, batch_size, _h5_file))
         return pl.Dia(data=data_rows, title=title,

@@ -31,13 +31,15 @@ def fullRun():
 
 def create():
     root_dir = osp.dirname(sys.argv[0])
-    _id = 'img100'
+    work_dir = "C:/ta30/entw1/work/work-greenscreen"
+    _id = 'img500'
 
     print("Arguments")
     print("   id        : {}".format(_id))
     print("   rootdir   : {}".format(root_dir))
+    print("   workdir   : {}".format(work_dir))
     cfg = cf.conf(_id, root_dir)
-    ctd.create(cfg)
+    ctd.create(work_dir, cfg)
     print("FINISHED")
 
 
@@ -49,5 +51,6 @@ def plot():
     pl._tryout_multi()
     pl._tryout()
     
-
-opt()
+# plot()
+# opt()
+create()

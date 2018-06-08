@@ -6,7 +6,7 @@ import numpy as np
 from gs import common as co
 
 
-def create(cfg: co.Conf):
+def create(work_dir: str, cfg: co.Conf):
 
     class TrainImages:
 
@@ -25,7 +25,7 @@ def create(cfg: co.Conf):
             yield np.hstack((features, labels))
 
     def write_h5(_id: str, data: Iterable[np.array]) -> str:
-        path = co.h5_file(_id)
+        path = co.h5_file(work_dir, _id)
         print("writing to {}".format(path))
         img_cnt = len(cfg.train_file_names)
         r, c = co.features_shape(cfg)

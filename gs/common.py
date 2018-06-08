@@ -98,39 +98,37 @@ def core_indices(rows: int, cols: int, delta: int) -> Iterable[Tuple[int, int]]:
             yield (i, j)
 
 
-def work_file(name: str, _dir: str = None) -> str:
+def work_file(work_dir: str, name: str, _dir: str = None) -> str:
     """Returns path to a file in the workdirectory or to a file in a subdirectory if _dir is defined.
     The work directory is created if it does not exist
     """
-    home_dir = Path.home()
     if _dir is None:
-        _work_dir = osp.join(home_dir, 'work', 'work-greenscreen')
+        _work_dir = osp.join(work_dir)
     else:
-        _work_dir = osp.join(home_dir, 'work', 'work-greenscreen', _dir)
+        _work_dir = osp.join(work_dir, _dir)
     if not osp.exists(_work_dir):
         print("created work dir: '{}'".format(_work_dir))
         os.makedirs(_work_dir)
     return osp.join(_work_dir, name)
 
 
-def work_dir(name: str) -> str:
+def work_dir(work_dir: str, name: str) -> str:
     """Returns the path to a directory in the work directory. the directory is created if it does not exist"""
-    home_dir = Path.home()
-    _dir = osp.join(home_dir, 'work', 'work-greenscreen', name)
+    _dir = osp.join(work_dir, name)
     if not osp.exists(_dir):
         print("created work dir: '{}'".format(_dir))
         os.makedirs(_dir)
     return _dir
 
 
-def csv_file(_id: str) -> str:
+def csv_file(work_dir: str, _id: str) -> str:
     name = "data_{}.csv".format(_id)
-    return work_file(name)
+    return work_file(work_dir, name)
 
 
-def h5_file(_id: str) -> str:
+def h5_file(work_dir: str, _id: str) -> str:
     name = "data_{}.h5".format(_id)
-    return work_file(name)
+    return work_file(work_dir, name)
 
 
 def model_file(_id: str) -> str:

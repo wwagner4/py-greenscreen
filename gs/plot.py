@@ -74,7 +74,7 @@ def plot_multi_dia(dias: Iterable[Dia], rows: int, cols: int, file: str, img_siz
 
 def _create_figure(img_size: Tuple) -> plt.Figure:
     if isinstance(img_size, Tuple):
-        base = 7.0
+        base = 12.0
         ratio = img_size[1] / img_size[0]
         x = base
         y = base * ratio

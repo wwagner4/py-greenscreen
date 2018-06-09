@@ -1,20 +1,27 @@
+import os.path as osp
+import sys
+import time
+
+import main_cfg as mc
+from gs import config as cf
 from gs import create_training_data as ctd
+from gs import plot_tryout as plt
 from gs import train_model as tm
 from gs import train_model_opt as tmo
 from gs import use_model as um
-from gs import config as cf
-from gs import plot as pl
-import time
-import sys
-import os.path as osp
+
+
+def _timestamp() -> str:
+    return time.strftime("%Y%m%d_%H%M%S", time.localtime())
+
+
+def _root_dir() -> str:
+    return osp.dirname(sys.argv[0])
 
 
 def fullRun():
-    if len(sys.argv) != 1:
-        print("One arguments required. 'id'. Possible values 'img100', 'img500', ...")
-
-    timestamp = time.strftime("%Y%m%d_%H%M%S", time.localtime())
-    root_dir = osp.dirname(sys.argv[0])
+    timestamp = _timestamp()
+    root_dir = _root_dir()
     _id = sys.argv[1]
 
     print("Arguments")
@@ -24,33 +31,42 @@ def fullRun():
 
     cfg = cf.conf(_id, root_dir)
 
-    ctd.create(cfg)
+    ctd.create(work_dir=mc.work_dir, cfg=cfg)
     tm.train(cfg)
     um.use(cfg, timestamp)
-
-
-def create():
-    root_dir = osp.dirname(sys.argv[0])
-    work_dir = "C:/ta30/entw1/work/work-greenscreen"
-    _id = 'img500'
-
-    print("Arguments")
-    print("   id        : {}".format(_id))
-    print("   rootdir   : {}".format(root_dir))
-    print("   workdir   : {}".format(work_dir))
-    cfg = cf.conf(_id, root_dir)
-    ctd.create(work_dir, cfg)
     print("FINISHED")
 
 
+def create():
+    root_dir = _root_dir()
+    _id = 'img500'
+
+    print("STARTED create")
+    print("   id        : {}".format(_id))
+    print("   rootdir   : {}".format(root_dir))
+    print("   workdir   : {}".format(mc.work_dir))
+    cfg = cf.conf(_id, root_dir)
+    ctd.create(mc.work_dir, cfg)
+    print("FINISHED create")
+
+
 def opt():
-    tmo._run()
+    root_dir = _root_dir()
+    _id = 'img100'
+
+    print("STARTED create")
+    print("   id        : {}".format(_id))
+    print("   rootdir   : {}".format(root_dir))
+    print("   workdir   : {}".format(mc.work_dir))
+
+    tmo.run(_id, work_dir=mc.work_dir, root_dir=root_dir)
 
 
 def plot():
-    pl._tryout_multi()
-    pl._tryout()
-    
+    plt.tryout_multi(mc.work_dir)
+    plt.tryout(mc.work_dir)
+
+
 # plot()
 # opt()
 create()

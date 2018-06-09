@@ -1,18 +1,19 @@
-import gs.config as cfg
-import gs.common as co
-import gs.plot as pl
-import keras.optimizers as opt
 import h5py
+import keras.optimizers as opt
+
+import gs.common as co
+import gs.config as cfg
+import gs.plot as pl
 
 
-def _run():
+def run(_id: str, root_dir: str, work_dir: str):
     epoche_cnt = 10
     batch_sizes = [10, 20, 30, 40, 50, 60]
     runid = "w006"
     learning_rates = [0.00100, 0.00050, 0.00010, 0.00001]
 
     epoches = list(range(0, epoche_cnt))
-    _cfg = cfg.conf('img100', '..')
+    _cfg = cfg.conf(_id, root_dir)
     lrmax = len(learning_rates)
 
     def _train(lr: float, lrnr: int, batch_size: int, h5_file) -> pl.DataRow:
@@ -44,7 +45,7 @@ def _run():
                       xaxis=pl.Axis(title="epoche"),
                       yaxis=pl.Axis(lim=(0.8, 1.0)))
 
-    path = co.h5_file(_cfg.id)
+    path = co.h5_file(work_dir=work_dir, _id=_cfg.id)
     print("reading from '{}'".format(path))
     with h5py.File(path, 'r', libver='latest') as _h5_file:
 
@@ -53,6 +54,6 @@ def _run():
             dia = _train01(bs, _h5_file)
             dias.append(dia)
 
-        file = co.work_file(name="opt_adam_{}.png".format(runid), _dir='opt')
+        file = co.work_file(work_dir=work_dir, name="opt_adam_{}.png".format(runid), _dir='opt')
         pl.plot_multi_dia(dias, rows=3, cols=2, file=file, img_size=(3000, 3000))
         print("plot result to {}".format(file))

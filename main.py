@@ -67,6 +67,6 @@ def plot():
     plt.tryout(mc.work_dir)
 
 
-# plot()
+plot()
 # opt()
-create()
+# create()

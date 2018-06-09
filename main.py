@@ -54,12 +54,13 @@ def opt():
     root_dir = _root_dir()
     _id = 'img100'
 
-    print("STARTED create")
+    print("STARTED opt")
     print("   id        : {}".format(_id))
     print("   rootdir   : {}".format(root_dir))
     print("   workdir   : {}".format(mc.work_dir))
 
     tmo.run(_id, work_dir=mc.work_dir, root_dir=root_dir)
+    print("FINISHED opt")
 
 
 def plot():
@@ -67,6 +68,6 @@ def plot():
     plt.tryout(mc.work_dir)
 
 
-plot()
-# opt()
+# plot()
+opt()
 # create()

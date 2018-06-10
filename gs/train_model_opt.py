@@ -10,7 +10,7 @@ import gs.plot as pl
 
 def run(_id: str, root_dir: str, work_dir: str):
     epoche_cnt = 10
-    runid = "bob001"
+    runid = "bob003"
 
     models = [
         cfg.model_a,
@@ -28,34 +28,34 @@ def run(_id: str, root_dir: str, work_dir: str):
         xcv = h5_file['dsx_cross']
         ycv = h5_file['dsy_cross']
 
-        data = []
-        datat = []
+        data_train = []
+        data_eval = []
         for n, model_func in enumerate(models):
             inter_layers = n + 1
             model = model_func()
             model.compile(loss='binary_crossentropy', optimizer=_cfg.optimizer, metrics=['accuracy'])
-            scoret = 0.0
-            score = 0.0
+            score_train = 0.0
+            score_eval = 0.0
             for epoche in epoches:
                 hist: History = model.fit(x, y, epochs=1, batch_size=_cfg.batch_size, shuffle='batch', verbose=0)
-                scoret = hist.history['acc'][0]
-                score = model.evaluate(xcv, ycv,  batch_size=_cfg.batch_size, verbose=0)[1]
+                score_train = hist.history['acc'][0]
+                score_eval = model.evaluate(xcv, ycv,  batch_size=_cfg.batch_size, verbose=0)[1]
                 print("score inter_layers {} epoche {}/{} acc[train: {:.4f}, eval: {:.4f}]"
-                      .format(inter_layers, epoche + 1, epoche_cnt, scoret, score))
+                      .format(inter_layers, epoche + 1, epoche_cnt, score_train, score_eval))
 
-            data.append(pl.XY(inter_layers, scoret))
-            datat.append(pl.XY(inter_layers, score))
+            data_train.append(pl.XY(inter_layers, score_train))
+            data_eval.append(pl.XY(inter_layers, score_eval))
 
         return (
-            pl.DataRow(data=datat, name="train"),
-            pl.DataRow(data=data, name="eval"))
+            pl.DataRow(data=data_train, name="train"),
+            pl.DataRow(data=data_eval, name="eval"))
 
     def _train01(_h5_file) -> pl.Dia:
         data_rows = []
         title = "optimize model"
-        drt, dr = _train(_h5_file)
-        data_rows.append(drt)
-        data_rows.append(dr)
+        dr_train, dr_eval = _train(_h5_file)
+        data_rows.append(dr_train)
+        data_rows.append(dr_eval)
         return pl.Dia(data=data_rows, title=title,
                       xaxis=pl.Axis(title="intermediate layers"),
                       yaxis=pl.Axis(lim=(0.8, 1.0)))

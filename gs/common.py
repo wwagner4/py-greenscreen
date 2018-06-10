@@ -1,14 +1,13 @@
 import itertools as it
 import os
 import os.path as osp
-from pathlib import Path
-from typing import Tuple, Iterable, Any, List, Dict
 import random as ran
+from typing import Tuple, Iterable, Any, List, Dict
 
 import matplotlib.pylab as pl
 import numpy as np
-from keras.optimizers import Optimizer
 from keras import Model
+from keras.optimizers import Optimizer
 
 
 class Dim:
@@ -98,42 +97,42 @@ def core_indices(rows: int, cols: int, delta: int) -> Iterable[Tuple[int, int]]:
             yield (i, j)
 
 
-def work_file(work_dir: str, name: str, _dir: str = None) -> str:
+def work_file(_work_dir: str, name: str, _dir: str = None) -> str:
     """Returns path to a file in the workdirectory or to a file in a subdirectory if _dir is defined.
     The work directory is created if it does not exist
     """
     if _dir is None:
-        _work_dir = osp.join(work_dir)
+        _work_dir = osp.join(_work_dir)
     else:
-        _work_dir = osp.join(work_dir, _dir)
+        _work_dir = osp.join(_work_dir, _dir)
     if not osp.exists(_work_dir):
         print("created work dir: '{}'".format(_work_dir))
         os.makedirs(_work_dir)
     return osp.join(_work_dir, name)
 
 
-def work_dir(work_dir: str, name: str) -> str:
+def work_dir(_work_dir: str, name: str) -> str:
     """Returns the path to a directory in the work directory. the directory is created if it does not exist"""
-    _dir = osp.join(work_dir, name)
+    _dir = osp.join(_work_dir, name)
     if not osp.exists(_dir):
         print("created work dir: '{}'".format(_dir))
         os.makedirs(_dir)
     return _dir
 
 
-def csv_file(work_dir: str, _id: str) -> str:
+def csv_file(_work_dir: str, _id: str) -> str:
     name = "data_{}.csv".format(_id)
-    return work_file(work_dir, name)
+    return work_file(_work_dir, name)
 
 
-def h5_file(work_dir: str, _id: str) -> str:
+def h5_file(_work_dir: str, _id: str) -> str:
     name = "data_{}.h5".format(_id)
-    return work_file(work_dir, name)
+    return work_file(_work_dir, name)
 
 
-def model_file(_id: str) -> str:
+def model_file(_work_dir: str, _id: str) -> str:
     name = "model_{}.h5".format(_id)
-    return work_file(name)
+    return work_file(_work_dir, name)
 
 
 def load_image(path: str, _dim: Dim) -> np.array:

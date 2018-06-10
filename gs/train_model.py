@@ -1,10 +1,11 @@
-from gs import common as co
 import h5py
 
+from gs import common as co
 
-def train(cfg: co.Conf):
+
+def train(work_dir: str, cfg: co.Conf):
     def run():
-        path = co.h5_file(cfg.id)
+        path = co.h5_file(work_dir, cfg.id)
         print("reading from '{}'".format(path))
         with h5py.File(path, 'r', libver='latest') as h5_file:
             x = h5_file['dsx']
@@ -21,7 +22,7 @@ def train(cfg: co.Conf):
             model.fit(x, y, epochs=4, batch_size=20, shuffle='batch')
             print("Fit model {}".format(model))
 
-            model_file = co.model_file(cfg.id)
+            model_file = co.model_file(work_dir, cfg.id)
             model.save(model_file)
 
             print("Saved model to {}".format(model_file))

@@ -45,7 +45,7 @@ def run(_id: str, root_dir: str, work_dir: str):
                       xaxis=pl.Axis(title="epoche"),
                       yaxis=pl.Axis(lim=(0.8, 1.0)))
 
-    path = co.h5_file(work_dir=work_dir, _id=_cfg.id)
+    path = co.h5_file(_work_dir=work_dir, _id=_cfg.id)
     print("reading from '{}'".format(path))
     with h5py.File(path, 'r', libver='latest') as _h5_file:
 
@@ -54,6 +54,6 @@ def run(_id: str, root_dir: str, work_dir: str):
             dia = _train01(bs, _h5_file)
             dias.append(dia)
 
-        file = co.work_file(work_dir=work_dir, name="opt_adam_{}.png".format(runid), _dir='opt')
+        file = co.work_file(_work_dir=work_dir, name="opt_adam_{}.png".format(runid), _dir='opt')
         pl.plot_multi_dia(dias, rows=3, cols=2, file=file, img_size=(3000, 3000))
         print("plot result to {}".format(file))

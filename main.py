@@ -1,5 +1,3 @@
-import os.path as osp
-import sys
 import time
 
 import main_cfg as mc
@@ -15,30 +13,26 @@ def _timestamp() -> str:
     return time.strftime("%Y%m%d_%H%M%S", time.localtime())
 
 
-def _root_dir() -> str:
-    return osp.dirname(sys.argv[0])
-
-
-def fullRun():
+def full_run():
     timestamp = _timestamp()
-    root_dir = _root_dir()
-    _id = sys.argv[1]
+    root_dir = mc.root_dir
+    _id = "img100"
 
-    print("Arguments")
+    print("STARTED full_run")
     print("   id        : {}".format(_id))
     print("   rootdir   : {}".format(root_dir))
     print("   timestamp : {}".format(timestamp))
 
     cfg = cf.conf(_id, root_dir)
 
-    ctd.create(work_dir=mc.work_dir, cfg=cfg)
-    tm.train(cfg)
-    um.use(cfg, timestamp)
-    print("FINISHED")
+    ctd.create(mc.work_dir, cfg)
+    tm.train(mc.work_dir, cfg)
+    um.use(mc.work_dir, cfg, timestamp)
+    print("FINISHED full_run")
 
 
 def create():
-    root_dir = _root_dir()
+    root_dir = mc.root_dir
     _id = 'img500'
 
     print("STARTED create")
@@ -51,7 +45,7 @@ def create():
 
 
 def opt():
-    root_dir = _root_dir()
+    root_dir = mc.root_dir
     _id = 'img100'
 
     print("STARTED opt")
@@ -69,5 +63,6 @@ def plot():
 
 
 # plot()
-opt()
+# opt()
 # create()
+full_run()

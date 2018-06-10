@@ -54,6 +54,6 @@ def tryout_multi(work_dir: str):
                 yaxis=Axis(lim=(0, 40)))
     dia_b = Dia([data_b, data_c], 'Sinus', yaxis=Axis("amplitude"))
 
-    file = co.work_file(work_dir=work_dir, name='tryout_plot_multi_002.png', _dir="plot-tryout")
+    file = co.work_file(_work_dir=work_dir, name='tryout_plot_multi_002.png', _dir="plot-tryout")
     plot_multi_dia([dia_a, dia_b], 1, 2, file, img_size=(3000, 3000))
     print("wrote to file:{}".format(file))

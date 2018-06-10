@@ -1,13 +1,15 @@
-from gs import common as co
-import keras.models as km
-import numpy as np
 import os
 import os.path as osp
+
+import keras.models as km
+import numpy as np
 from PIL import Image
 
+from gs import common as co
 
-def use(cfg: co.Conf, timestamp: str):
-    out_dir = co.work_dir("{}_{}".format(cfg.id, timestamp))
+
+def use(work_dir: str, cfg: co.Conf, timestamp: str):
+    out_dir = co.work_dir(work_dir, "{}_{}".format(cfg.id, timestamp))
 
     def plot_image(img: np.array, path: str):
         img1 = (img * 256).astype(np.uint8)
@@ -54,7 +56,7 @@ def use(cfg: co.Conf, timestamp: str):
         plot_image(timg, out)
 
     def run():
-        model_file = co.model_file(cfg.id)
+        model_file = co.model_file(work_dir, cfg.id)
         print("using model: '{}'".format(model_file))
         model: km.Sequential = km.load_model(model_file)
         print("input directory: '{}'".format(cfg.img_dir))

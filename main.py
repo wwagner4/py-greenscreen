@@ -33,7 +33,7 @@ def full_run():
 
 def create():
     root_dir = mc.root_dir
-    _id = 'img500'
+    _id = 'img100'
 
     print("STARTED create")
     print("   id        : {}".format(_id))
@@ -63,6 +63,6 @@ def plot():
 
 
 # plot()
-# opt()
+opt()
 # create()
-full_run()
+# full_run()

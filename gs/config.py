@@ -1,12 +1,12 @@
-from typing import Tuple, Iterable
-
-import gs.common as co
 import os.path as osp
+from typing import Tuple, Iterable
 
 from keras import Model
 from keras.layers import Dense
 from keras.models import Sequential
 from keras.optimizers import Adam
+
+import gs.common as co
 
 
 def conf(_id: str, root_dir: str) -> co.Conf:
@@ -27,7 +27,9 @@ def conf(_id: str, root_dir: str) -> co.Conf:
                     transp=osp.join(img_dir, 'bsp2_transp.png'))],
             around_indices=list(square_indices_rows_cols(_delta)),
             model=model_a,
-            optimizer=Adam(lr=0.0005))
+            optimizer=Adam(lr=0.00010),
+            batch_size=40
+        )
     elif _id == 'img500':
         img_dir = osp.join(root_dir, "res", _id)
         _delta = 10
@@ -48,7 +50,8 @@ def conf(_id: str, root_dir: str) -> co.Conf:
                     transp=osp.join(img_dir, 'trainTransp03.png'))],
             around_indices=list(square_indices_rows_cols(_delta)),
             model=model_a,
-            optimizer=Adam(lr=0.0005))
+            optimizer=Adam(lr=0.00010),
+            batch_size=40)
     else:
         raise ValueError("invalid id '{}'".format(_id))
 

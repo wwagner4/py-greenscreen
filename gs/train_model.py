@@ -19,7 +19,7 @@ def train(work_dir: str, cfg: co.Conf):
             model.compile(loss='binary_crossentropy', optimizer=cfg.optimizer, metrics=['accuracy'])
             print("Compiled model {}".format(model))
 
-            model.fit(x, y, epochs=4, batch_size=20, shuffle='batch')
+            model.fit(x, y, epochs=4, batch_size=cfg.batch_size, shuffle='batch', verbose=0)
             print("Fit model {}".format(model))
 
             model_file = co.model_file(work_dir, cfg.id)

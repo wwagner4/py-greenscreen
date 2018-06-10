@@ -40,7 +40,8 @@ class Conf:
                  train_file_names: List[TrainFileNames],
                  around_indices: List[Tuple[int, int]],
                  model: Model,  # function to model
-                 optimizer: Optimizer):
+                 optimizer: Optimizer,
+                 batch_size: int):
         self.id = _id
         self.dim = dim
         self.delta = delta
@@ -49,6 +50,7 @@ class Conf:
         self.around_indices = around_indices
         self.model = model
         self.optimizer = optimizer
+        self.batch_size = batch_size
 
 
 def flatmap(f, list_of_list: Iterable[Any]) -> Iterable[Any]:

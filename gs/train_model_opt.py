@@ -9,7 +9,7 @@ import gs.plot as pl
 
 
 def run(_id: str, root_dir: str, work_dir: str):
-    epoche_cnt = 10
+    epoche_cnt = 30
     runid = "bob003"
 
     models = [

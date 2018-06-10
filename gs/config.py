@@ -65,6 +65,38 @@ def model_a() -> Model:
     return model
 
 
+def model_a2() -> Model:
+    model = Sequential()
+    model.add(Dense(1000, input_dim=2646, activation='sigmoid'))
+    model.add(Dense(500, activation='sigmoid'))
+    model.add(Dense(100, activation='sigmoid'))
+    model.add(Dense(1, activation='sigmoid'))
+    print("created model_a {}".format(model))
+    return model
+
+
+def model_a3() -> Model:
+    model = Sequential()
+    model.add(Dense(1000, input_dim=2646, activation='sigmoid'))
+    model.add(Dense(800, activation='sigmoid'))
+    model.add(Dense(500, activation='sigmoid'))
+    model.add(Dense(100, activation='sigmoid'))
+    model.add(Dense(1, activation='sigmoid'))
+    print("created model_a {}".format(model))
+    return model
+
+
+def model_a4() -> Model:
+    model = Sequential()
+    model.add(Dense(1000, input_dim=2646, activation='sigmoid'))
+    model.add(Dense(800, activation='sigmoid'))
+    model.add(Dense(500, activation='sigmoid'))
+    model.add(Dense(100, activation='sigmoid'))
+    model.add(Dense(1, activation='sigmoid'))
+    print("created model_a {}".format(model))
+    return model
+
+
 def square_indices_rows(delta: int) -> Iterable[Tuple[int, int]]:
     for i in range(-delta, delta + 1):
         for j in range(-delta, delta + 1):

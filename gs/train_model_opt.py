@@ -12,6 +12,12 @@ def run(_id: str, root_dir: str, work_dir: str):
     epoche_cnt = 10
     runid = "bob001"
 
+    models = [
+        cfg.model_a,
+        cfg.model_a2,
+        cfg.model_a3,
+        cfg.model_a4]
+
     epoches = list(range(0, epoche_cnt))
     _cfg = cfg.conf(_id, root_dir)
 
@@ -22,18 +28,23 @@ def run(_id: str, root_dir: str, work_dir: str):
         xcv = h5_file['dsx_cross']
         ycv = h5_file['dsy_cross']
 
-        model = _cfg.model()
-        model.compile(loss='binary_crossentropy', optimizer=_cfg.optimizer, metrics=['accuracy'])
         data = []
         datat = []
-        for epoche in epoches:
-            hist: History = model.fit(x, y, epochs=1, batch_size=_cfg.batch_size, shuffle='batch', verbose=0)
-            scoret = hist.history['acc'][0]
-            score = model.evaluate(xcv, ycv,  batch_size=_cfg.batch_size, verbose=0)[1]
-            print("score batch size: {} epoche {}/{} acc[train: {:.4f}, eval: {:.4f}]"
-                  .format(_cfg.batch_size, epoche + 1, epoche_cnt, scoret, score))
-            data.append(pl.XY(epoche, scoret))
-            datat.append(pl.XY(epoche, score))
+        for n, model_func in enumerate(models):
+            inter_layers = n + 1
+            model = model_func()
+            model.compile(loss='binary_crossentropy', optimizer=_cfg.optimizer, metrics=['accuracy'])
+            scoret = 0.0
+            score = 0.0
+            for epoche in epoches:
+                hist: History = model.fit(x, y, epochs=1, batch_size=_cfg.batch_size, shuffle='batch', verbose=0)
+                scoret = hist.history['acc'][0]
+                score = model.evaluate(xcv, ycv,  batch_size=_cfg.batch_size, verbose=0)[1]
+                print("score inter_layers {} epoche {}/{} acc[train: {:.4f}, eval: {:.4f}]"
+                      .format(inter_layers, epoche + 1, epoche_cnt, scoret, score))
+
+            data.append(pl.XY(inter_layers, scoret))
+            datat.append(pl.XY(inter_layers, score))
 
         return (
             pl.DataRow(data=datat, name="train"),
@@ -46,7 +57,7 @@ def run(_id: str, root_dir: str, work_dir: str):
         data_rows.append(drt)
         data_rows.append(dr)
         return pl.Dia(data=data_rows, title=title,
-                      xaxis=pl.Axis(title="epoche"),
+                      xaxis=pl.Axis(title="intermediate layers"),
                       yaxis=pl.Axis(lim=(0.8, 1.0)))
 
     path = co.h5_file(_work_dir=work_dir, _id=_cfg.id)
